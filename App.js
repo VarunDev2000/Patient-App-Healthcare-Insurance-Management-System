@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import ProfileScreen from "./screens/Profile/ProfileScreen";
-import HomeScreen from "./screens/HomePage/HomeScreen";
+import HomeScreenNavigation from "./screens/HomePage/HomeScreenNavigation";
 
 const Drawer = createDrawerNavigator();
 
@@ -23,8 +23,8 @@ class App extends Component{
       width: "55%",
     }}>
       <Drawer.Screen
-        name="HomeScreen"
-        component={HomeScreen}
+        name="HomeScreenNavigation"
+        component={HomeScreenNavigation}
         options={{ 
           drawerLabel: "Home"
          }}

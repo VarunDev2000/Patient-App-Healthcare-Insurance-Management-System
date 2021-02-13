@@ -5,23 +5,47 @@ import CardView from 'react-native-cardview';
 import { ScrollView } from "react-native-gesture-handler";
 import Icon from 'react-native-vector-icons/Ionicons';
 import IndexTable from '../../Components/IndexTable';
+import BillTable from '../../Components/BillTable';
 
 import colors  from "../../config/colors";
 
 LogBox.ignoreLogs(['Warning: ...']);
 
-  const DATA = [
-    {
-      id: '1',
-      card_heading: 'Personal Information',
-      ref_name: "personalinfoSelected",
-    },
-    {
-      id: '2',
-      card_heading: 'My Bills',
-      ref_name: "myBillsSelected",
-    },
-  ];
+const DATA = [
+  {
+    id: '1',
+    card_heading: 'Personal Information',
+    ref_name: "personalinfoSelected",
+  },
+  {
+    id: '2',
+    card_heading: 'My Bills',
+    ref_name: "myBillsSelected",
+  },
+];
+
+const BILL_DATA = [
+  {
+    id: '1',
+    tableData: [['52'],['Brain scanning'],['12-10-2020'],['Apollo Hospital'],['Rs.4000']]
+  },
+  {
+    id: '2',
+    tableData: [['23'],['Ultrasound'],['06-05-2020'],['Apollo Hospital'],['Rs.1000']]
+  },
+  {
+    id: '3',
+    tableData: [['91'],['Skin test'],['06-01-2021'],['K.S.P Skin Hospital'],['Rs.8000']]
+  },
+  {
+    id: '4',
+    tableData: [['142'],['Skin test'],['21-01-2021'],['K.S.P Skin Hospital'],['Rs.2000']]
+  },
+  {
+    id: '5',
+    tableData: [['305'],['Brain scanning'],['10-2-2021'],['Apollo Hospital'],['Rs.2000']]
+  },
+];
 
   
 class ProfileScreen extends Component {
@@ -32,7 +56,9 @@ class ProfileScreen extends Component {
         profilePic : require('./res/profilepic.jpg'),
 
         tableTitle: ['Name', 'DOB', 'Mobile No', 'Blood Grp'],
-        tableData: [['Varun'],['06-05-2000'],['9087654321'],['O +ve']]
+        tableData: [['Varun'],['06-05-2000'],['9087654321'],['O +ve']],
+
+        billTableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE'],
     }
 
     setSelected(id){
@@ -62,6 +88,18 @@ class ProfileScreen extends Component {
           </TouchableOpacity>
       );
 
+      const allBillsItem = ({ item }) => (
+        <CardView
+        style={styles.billCard}
+        cardElevation={3}
+        cardMaxElevation={3}
+        cornerRadius={2}>
+            <BillTable
+              tableTitle = {this.state.billTableTitle}
+              tableData = {item.tableData}
+            />
+        </CardView>
+      );
 
     return (
         <SafeAreaView style={{ height: this.state.height,backgroundColor: colors.bgColor }}>
@@ -70,7 +108,10 @@ class ProfileScreen extends Component {
           <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.toggleDrawer()}>
             <Icon name="menu-sharp" size={28} color={colors.topBarIconColor} style={{marginLeft:18}}/>
           </TouchableOpacity>
-          <Text style={styles.pageTitle}> Profile </Text>
+          <Text style={styles.pageTitle}> PROFILE </Text>
+          <TouchableOpacity activeOpacity={.8} onPress={null}>
+            <Icon name="notifications" size={25} color={colors.topBarIconColor} style={{marginRight:18}}/>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.middleLayout}>
@@ -83,33 +124,43 @@ class ProfileScreen extends Component {
             columnWrapperStyle={{justifyContent: 'space-between'}}
             />
         </View>
-
-        <CardView
-        style={styles.bottomLayout}
-        cardElevation={2}
-        cardMaxElevation={3}
-        cornerRadius={3}>
-          <View>
-          <ScrollView style={{padding:10}}>
             {
                 this.state.personalinfoSelected == true ? (
+                  <CardView
+                  style={styles.bottomLayout1}
+                  cardElevation={2}
+                  cardMaxElevation={3}
+                  cornerRadius={3}>
                     <View>
-                        <Image style={styles.cardImage} source={this.state.profilePic}/>
-                        <IndexTable
-                          tableTitle = {this.state.tableTitle}
-                          tableData = {this.state.tableData}
-                        />
-                        <Text style={styles.logoutStyle}>LOG OUT</Text>
+                      <ScrollView style={{padding:10}}>
+                        <View>
+                            <Image style={styles.cardImage} source={this.state.profilePic}/>
+                            <IndexTable
+                              tableTitle = {this.state.tableTitle}
+                              tableData = {this.state.tableData}
+                            />
+                            <Text style={styles.logoutStyle}>LOG OUT</Text>
+                        </View>
+                      </ScrollView>
                     </View>
+                  </CardView>
                 ) : (
+                  <CardView
+                  style={styles.bottomLayout2}
+                  cardElevation={2}
+                  cardMaxElevation={3}
+                  cornerRadius={3}>
                     <View>
-                        <Text>My Bills</Text>
+                        <FlatList
+                          contentContainerStyle={styles.billsListLayout}
+                          data={BILL_DATA}
+                          renderItem={allBillsItem}
+                          keyExtractor={item => item.id}
+                        />
                     </View>
+                  </CardView>
                 )
             }
-            </ScrollView>
-            </View>
-        </CardView>
 
         </SafeAreaView>
     );
@@ -124,18 +175,39 @@ const styles = StyleSheet.create({
       width:"100%",
       backgroundColor: colors.primary,
       alignItems:"center",
+      justifyContent:"space-between"
     },
     middleLayout:{
         flex:0,
     },
-    bottomLayout: {
+    bottomLayout1: {
       flex:0,
       margin:5,
       marginTop:8,
       backgroundColor: colors.secondary,
     },
+    bottomLayout2: {
+      flex:1,
+      padding:8,
+      margin:8,
+      marginTop:8,
+      marginBottom:"12%",
+      backgroundColor: colors.secondary,
+    },
+    billsListLayout:{
+      paddingBottom:0
+    },
     flatListStyle: {
         paddingTop:10,
+    },
+    billCard: {
+      width:"96%",
+      margin:"2%",
+      marginTop:17,
+      marginBottom:10,
+      backgroundColor:colors.secondary,
+      elevation:5,
+      borderRadius:5,
     },
     card: {
       width:"46%",
@@ -174,10 +246,9 @@ const styles = StyleSheet.create({
       resizeMode:"contain",
     },
     pageTitle: {
-      fontSize:21,
+      fontSize:18,
       fontWeight:"bold",
       color:colors.secondary,
-      marginLeft:"7%"
     },
     logoutStyle: {
       marginTop: 25,

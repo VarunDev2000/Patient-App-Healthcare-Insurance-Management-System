@@ -1,44 +1,128 @@
 import React, { Component } from "react";
 import { SafeAreaView, Dimensions, View, LogBox,
-  Text, TouchableOpacity, StyleSheet, StatusBar, FlatList,  Image  } from "react-native";
+  Text, TouchableOpacity, StyleSheet, StatusBar, FlatList,  Image, RefreshControl  } from "react-native";
 import CardView from 'react-native-cardview';
 import { ScrollView } from "react-native-gesture-handler";
 import Icon from 'react-native-vector-icons/Ionicons';
-import IndexTable from '../../Components/IndexTable';
+import Icon1 from 'react-native-vector-icons/MaterialIcons';
+import BillTable from '../../Components/BillTable';
 
 import colors  from "../../config/colors";
 
-  
+LogBox.ignoreLogs(['Warning: ...']);
+
+
+const BILL_BUTTON_DATA = [
+  {
+    id: '1',
+    card_heading: 'NEW BILL',
+    img: require('./res/newBill.png'),
+    nav: 'NewBill',
+  },
+  {
+    id: '2',
+    card_heading: 'ALL BILLS',
+    img: require('./res/allBills.jpg'),
+    nav: 'AllBills',
+  },
+
+];
+
+const BILL_DATA = [
+  {
+    id: '1',
+    tableData: [['23'],['Ultrasound'],['06-05-2020'],['Apollo Hospital'],['Rs.1000'],[<View style={{flexDirection:"row"}}><Icon name="time" size={23} color="#c9c930" style={{marginLeft:12}}/><Text style={{marginLeft:5,fontWeight:"bold",marginTop:2,color:"#c9c930"}}>WAITING </Text></View>]]
+  },
+  {
+    id: '2',
+    tableData: [['52'],['Brain scanning'],['12-10-2020'],['Apollo Hospital'],['Rs.4000'],[<View style={{flexDirection:"row"}}><Icon name="checkmark-circle" size={23} color="green" style={{marginLeft:12}}/><Text style={{marginLeft:5,fontWeight:"bold",marginTop:2,color:"green"}}>ACCEPTED </Text></View>]]
+  },
+  {
+    id: '3',
+    tableData: [['91'],['Skin test'],['06-01-2021'],['Apollo Hospital'],['Rs.8000'],[<View style={{flexDirection:"row"}}><Icon1 name="cancel" size={23} color="red" style={{marginLeft:12}}/><Text style={{marginLeft:5,fontWeight:"bold",marginTop:2,color:"red"}}>REJECTED </Text></View>]]
+  },
+];
+
+
 class HomeScreen extends Component {
     state = {
         height: Dimensions.get("screen").height,
+        tableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE','STATUS'],
     }
 
   render() {
+
+    const billButtonItem = ({ item }) => (
+      <CardView
+      style={styles.card}
+      cardElevation={3}
+      cardMaxElevation={3}
+      cornerRadius={5}>
+        <TouchableOpacity activeOpacity={.9} onPress={() => this.props.navigation.navigate(item.nav)}>
+          <Image style={styles.cardImage} source={item.img} />
+          <Text style={styles.cardHeading}>
+            {item.card_heading}
+          </Text>
+        </TouchableOpacity>
+      </CardView>
+    );
+
+    const currentBillsItem = ({ item }) => (
+      <CardView
+      style={styles.currentStatusCard}
+      cardElevation={3}
+      cardMaxElevation={3}
+      cornerRadius={2}>
+          <BillTable
+            tableTitle = {this.state.tableTitle}
+            tableData = {item.tableData}
+          />
+      </CardView>
+    );
+
     return (
         <SafeAreaView style={{ height: this.state.height,backgroundColor: colors.bgColor }}>
         <StatusBar backgroundColor="black" />
+        <View style={{flex:1}}>
         <View style={styles.topLayout}>
           <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.toggleDrawer()}>
             <Icon name="menu-sharp" size={28} color={colors.topBarIconColor} style={{marginLeft:18}}/>
           </TouchableOpacity>
-          <Text style={styles.pageTitle}> Home </Text>
+          <Text style={styles.pageTitle}> HOME </Text>
+          <TouchableOpacity activeOpacity={.8} onPress={null}>
+            <Icon name="notifications" size={25} color={colors.topBarIconColor} style={{marginRight:18}}/>
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.middleLayout}>
+        <View style={styles.middleLayout1}>
+          <FlatList
+          data={BILL_BUTTON_DATA}
+          renderItem={billButtonItem}
+          keyExtractor={item => item.id}
+          numColumns={2}
+          columnWrapperStyle={{justifyContent: 'space-between'}}
+        />
         </View>
 
-        <CardView
-        style={styles.bottomLayout}
+      <CardView
+        style={styles.middleLayout2}
         cardElevation={2}
-        cardMaxElevation={3}
-        cornerRadius={3}>
+        cardMaxElevation={2}
+        cornerRadius={0}>
           <View>
             <ScrollView style={{padding:10}}>
-                <Text>Home Screen</Text>
+                <Text style={{fontSize:14,color:"white",fontWeight:"bold",textAlign:"center"}}>RECENT BILLS</Text>
             </ScrollView>
            </View>
         </CardView>
+
+          <FlatList
+            contentContainerStyle={styles.bottomLayout}
+            data={BILL_DATA}
+            renderItem={currentBillsItem}
+            keyExtractor={item => item.id}
+          />
+        </View>
 
         </SafeAreaView>
     );
@@ -53,15 +137,19 @@ const styles = StyleSheet.create({
       width:"100%",
       backgroundColor: colors.primary,
       alignItems:"center",
+      justifyContent:"space-between",
     },
-    middleLayout:{
+    middleLayout1:{
         flex:0,
+        marginTop:6,
     },
-    bottomLayout: {
+    middleLayout2: {
       flex:0,
-      margin:5,
-      marginTop:8,
-      backgroundColor: colors.secondary,
+      marginTop:10,
+      backgroundColor: "#3497e3",
+    },
+    bottomLayout:{
+      paddingBottom:50,
     },
     flatListStyle: {
         paddingTop:10,
@@ -69,6 +157,15 @@ const styles = StyleSheet.create({
     card: {
       width:"46%",
       margin:"2%",
+      backgroundColor:colors.secondary,
+      elevation:5,
+      borderRadius:5,
+    },
+    currentStatusCard: {
+      width:"96%",
+      margin:"2%",
+      marginTop:17,
+      marginBottom:10,
       backgroundColor:colors.secondary,
       elevation:5,
       borderRadius:5,
@@ -81,10 +178,17 @@ const styles = StyleSheet.create({
       borderRadius:5,
     },
     cardHeading: {
-      fontSize:14,
+      fontSize:13,
       padding:10,
       fontStyle:"italic",
       alignSelf:"center",
+      color : colors.black,
+    },
+    currentStatusCardHeading: {
+      fontSize:15,
+      padding:10,
+      paddingLeft:15,
+      fontWeight:"bold",
       color : colors.black,
     },
     cardHeadingSelected: {
@@ -96,24 +200,14 @@ const styles = StyleSheet.create({
         color : colors.selectedTextColor,
     },
     cardImage: {
-      width:"40%",
-      height:200,
-      alignSelf:"center", 
+      width:"100%",
+      height:160,
       marginBottom:2,
-      resizeMode:"contain",
     },
     pageTitle: {
-      fontSize:21,
+      fontSize:18,
       fontWeight:"bold",
       color:colors.secondary,
-      marginLeft:"7%"
     },
-    logoutStyle: {
-      marginTop: 25,
-      margin:10,
-      marginBottom:20,
-      alignSelf:"flex-end",
-      color:"red"
-    }
   });
 export default HomeScreen;
