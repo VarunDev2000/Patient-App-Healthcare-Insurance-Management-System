@@ -111,7 +111,7 @@ class HomeScreen extends Component {
         cornerRadius={0}>
           <View>
             <ScrollView style={{padding:10}}>
-                <Text style={{fontSize:14,color:"white",fontWeight:"bold",textAlign:"center"}}>RECENT BILLS</Text>
+                <Text style={{fontSize:14,color:"black",fontWeight:"bold",textAlign:"center"}}>RECENT BILLS</Text>
             </ScrollView>
            </View>
         </CardView>
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     middleLayout2: {
       flex:0,
       marginTop:10,
-      backgroundColor: "#3497e3",
+      backgroundColor: colors.secondary,
     },
     bottomLayout:{
       paddingBottom:50,
@@ -155,8 +155,8 @@ const styles = StyleSheet.create({
         paddingTop:10,
     },
     card: {
-      width:"46%",
-      margin:"2%",
+      width:"45%",
+      margin:"2.5%",
       backgroundColor:colors.secondary,
       elevation:5,
       borderRadius:5,
