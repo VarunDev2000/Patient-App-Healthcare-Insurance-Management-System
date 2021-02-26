@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { SafeAreaView, Dimensions, View, LogBox,
-  Text, TouchableOpacity, StyleSheet, StatusBar, TextInput,  Image  } from "react-native";
+  Text, TouchableOpacity, StyleSheet, StatusBar, TextInput,  Image, Keyboard  } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
 import colors  from "../../config/colors";
 
+import BiometricAuthenticationModal from '../../Components/BiometricAuthenticationModal';
 import HomeScreen from './HomeScreen';
 import PersonalInfoScreen from './PersonalInfoScreen';
 
@@ -20,7 +21,8 @@ class Login extends Component {
         height: Dimensions.get("screen").height,
         cardImageSrc: "./res/1.jpg",
 
-        passVisible:false,
+        passVisible : false,
+        isModalVisible : false,
     }
 
     componentDidMount() {
@@ -29,7 +31,11 @@ class Login extends Component {
 
   render() {
     
-    const loginClick = () =>{
+    
+    const bioMetricAuthenticated = () =>{
+      this.setState({
+        isModalVisible : false
+      },
       this.state.infoAdded ? (
         this.props.navigation.reset(
         {
@@ -43,6 +49,14 @@ class Login extends Component {
           routes: [{ name: 'PersonalInfoScreen' }],
         })
       )
+      );
+    }
+  
+
+    const loginClick = () =>{
+      this.setState({
+        isModalVisible : true
+      })
     }
 
     const setPassVisibility = () =>{
@@ -50,6 +64,12 @@ class Login extends Component {
         passVisible : !this.state.passVisible
       })
     }
+
+    const closeModal = (val) => {
+      this.setState({
+        isModalVisible : false
+      })
+    };
 
     return (
       this.state.loggedIn ? (this.state.infoAdded ? (<HomeScreen/>) :
@@ -107,6 +127,12 @@ class Login extends Component {
                 <Text style = {styles.submitButtonText}> LOGIN </Text>
               </TouchableOpacity>
 
+              <BiometricAuthenticationModal
+                isModalVisible={this.state.isModalVisible}
+                closeModal={() => closeModal()}
+                bioMetricAuthenticated={() => bioMetricAuthenticated()}
+              />
+
             </KeyboardAwareView>
             </View>
             </View>
@@ -157,11 +183,13 @@ const styles = StyleSheet.create({
       backgroundColor: colors.primary,
       padding: 10,
       alignSelf:"center",
-      height: 40,
+      height: 43,
       marginTop:15,
       borderRadius:3,
       marginBottom:20,
       elevation:5,
+      justifyContent:"center",
+      alignItems:"center"
     },
     submitButtonText:{
       color: 'white',
