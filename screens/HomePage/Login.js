@@ -6,7 +6,6 @@ import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
 import colors  from "../../config/colors";
 
-import BiometricAuthenticationModal from '../../Components/BiometricAuthenticationModal';
 import HomeScreen from './HomeScreen';
 import PersonalInfoScreen from './PersonalInfoScreen';
 
@@ -22,7 +21,6 @@ class Login extends Component {
         cardImageSrc: "./res/1.jpg",
 
         passVisible : false,
-        isModalVisible : false,
     }
 
     componentDidMount() {
@@ -31,32 +29,8 @@ class Login extends Component {
 
   render() {
     
-    
-    const bioMetricAuthenticated = () =>{
-      this.setState({
-        isModalVisible : false
-      },
-      this.state.infoAdded ? (
-        this.props.navigation.reset(
-        {
-          index: 0,
-          routes: [{ name: 'HomeScreen' }],
-        })
-      ) : (
-        this.props.navigation.reset(
-        {
-          index: 0,
-          routes: [{ name: 'PersonalInfoScreen' }],
-        })
-      )
-      );
-    }
-  
-
     const loginClick = () =>{
-      this.setState({
-        isModalVisible : true
-      })
+      this.props.navigation.navigate("BiometricAuthentication");
     }
 
     const setPassVisibility = () =>{
@@ -65,11 +39,6 @@ class Login extends Component {
       })
     }
 
-    const closeModal = (val) => {
-      this.setState({
-        isModalVisible : false
-      })
-    };
 
     return (
       this.state.loggedIn ? (this.state.infoAdded ? (<HomeScreen/>) :
@@ -127,11 +96,6 @@ class Login extends Component {
                 <Text style = {styles.submitButtonText}> LOGIN </Text>
               </TouchableOpacity>
 
-              <BiometricAuthenticationModal
-                isModalVisible={this.state.isModalVisible}
-                closeModal={() => closeModal()}
-                bioMetricAuthenticated={() => bioMetricAuthenticated()}
-              />
 
             </KeyboardAwareView>
             </View>

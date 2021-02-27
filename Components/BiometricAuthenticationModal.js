@@ -17,6 +17,15 @@ const BiometricAuthenticationModal = (props) => {
     props.closeModal();
   };
 
+  const fadeIn = {
+    from: {
+      opacity: 0,
+    },
+    to: {
+      opacity: 1,
+    },
+  };
+
   const fadeOut = {
     from: {
       opacity: 1,
@@ -30,12 +39,12 @@ const BiometricAuthenticationModal = (props) => {
     <Modal
       isVisible={props.isModalVisible}
       animationIn="bounceInUp"
-      animationInTiming={500}
+      animationInTiming={600}
       animationOut= {fadeOut}
       animationOutTiming={200}
       backdropTransitionOutTiming={0}
       backdropTransitionOutTiming={0}
-      backdropOpacity={0.5}
+      backdropOpacity={0.6}
       backdropColor="black"
       scrollHorizontal={true}
       onBackButtonPress={() => closeModal()}
