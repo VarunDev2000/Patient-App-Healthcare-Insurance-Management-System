@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { Component } from "react";
 import Modal from "react-native-modal";
 import {
   View,
@@ -6,15 +6,47 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Dimensions
+  Platform,
 } from "react-native";
+
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import colors from "../config/colors";
 
-const BiometricAuthenticationModal = (props) => {
+class BiometricAuthenticationModal extends Component {
+
+  state = {
+    biometryType : "",
+  }
+
+  componentDidMount() {
+    this.checkBiometricAvailability();
+  }
+
+  checkBiometricAvailability(){
+    FingerprintScanner
+    .isSensorAvailable()
+    .then(biometryType => this.biometricChecked(biometryType))
+    .catch(error => this.setState({ errorMessage: error.message }));
+  }
+
+  biometricChecked(biometryType){
+    this.setState({biometryType : biometryType})
+
+    if(biometryType == "Biometrics")
+    {
+      this.authenticate()
+    }
+  }
+
+  authenticate(){
+    console.log("Authentication")
+  }
+
+  render() {
 
   const closeModal = () => {
-    props.closeModal();
+    this.props.closeModal();
   };
 
   const fadeIn = {
@@ -37,9 +69,9 @@ const BiometricAuthenticationModal = (props) => {
 
   return (
     <Modal
-      isVisible={props.isModalVisible}
-      animationIn="bounceInUp"
-      animationInTiming={600}
+      isVisible={this.props.isModalVisible}
+      animationIn={fadeIn}
+      animationInTiming={400}
       animationOut= {fadeOut}
       animationOutTiming={200}
       backdropTransitionOutTiming={0}
@@ -50,26 +82,48 @@ const BiometricAuthenticationModal = (props) => {
       onBackButtonPress={() => closeModal()}
     >
       <View style={styles.innerModalView}>
-          <Text style={styles.modalTitle1}>BIOMETRIC AUTHENTICATION</Text>
-          <Text style={styles.modalTitle2}>Verify your identity</Text>
-          <Text style={styles.modalDesc}>Confirm your fingerprint so we can verify it's you</Text>
+        {
+          this.state.biometryType == "Biometrics" ? (
+            <View>
+              <Text style={styles.modalTitle1}>BIOMETRIC AUTHENTICATION</Text>
+              <Text style={styles.modalTitle2}>Verify your identity</Text>
+              <Text style={styles.modalDesc}>Confirm your fingerprint so we can verify it's you</Text>
 
-          <Image style={styles.modalImage} source={require('./res/biometric.png')}/>
+              <Image style={styles.modalImage} source={require('./res/biometric.png')}/>
 
-          <Text style={styles.modalInstructions}>Touch the fingerprint sensor</Text>
+              <Text style={styles.modalInstructions}>Touch the fingerprint sensor</Text>
 
-        <View style={{flexDirection:"row",justifyContent:"space-between",marginTop:20}}>
-          <TouchableOpacity style={styles.buttonOuterLayerStyle} activeOpacity={.6} onPress={closeModal}>
-            <Text style={styles.buttonStyle}>CANCEL </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonOuterLayerStyle} activeOpacity={.6} onPress={props.bioMetricAuthenticated}>
-            <Text style={[styles.buttonStyle,{color:"green"}]}>SKIP </Text>
-          </TouchableOpacity>
-        </View>
+            <View style={{flexDirection:"row",justifyContent:"space-between",marginTop:20}}>
+              <TouchableOpacity style={styles.buttonOuterLayerStyle} activeOpacity={.6} onPress={closeModal}>
+                <Text style={styles.buttonStyle}>CANCEL </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonOuterLayerStyle} activeOpacity={.6} onPress={this.props.bioMetricAuthenticated}>
+                <Text style={[styles.buttonStyle,{color:"green"}]}>SKIP </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          ) : (
+            <View>
+              <Text style={[styles.modalTitle1,{marginBottom:0}]}>BIOMETRIC AUTHENTICATION</Text>
+
+              <Image style={styles.modalImage} source={require('./res/error-removebg-preview.png')}/>
+
+              <Text style={[styles.modalTitle2,{color:"red"}]}>Biometric not supported on this device</Text>
+              <Text style={styles.modalDesc}>Try using the app on other device</Text>
+
+            <View style={{flexDirection:"row",justifyContent:"space-between",marginTop:20}}>
+              <TouchableOpacity style={styles.buttonOuterLayerStyle} activeOpacity={.6} onPress={closeModal}>
+                <Text style={[styles.buttonStyle,{color:"black"}]}>GO BACK </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          )
+        }
 
       </View>
     </Modal>
   );
+  }
 };
 
 
@@ -87,7 +141,7 @@ const styles = StyleSheet.create({
       fontSize:17,
       fontWeight:"bold",
       textAlign:"center",
-      marginBottom:"4%",
+      marginBottom:"3%"
   },
   modalTitle2: {
     fontSize:15,
@@ -95,6 +149,7 @@ const styles = StyleSheet.create({
     marginBottom:"2.5%",
   },  
   modalDesc: {
+    color:"black",
     fontSize:12,
     fontStyle:"italic",
     textAlign:"center",

@@ -6,6 +6,8 @@ import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
 import colors  from "../../config/colors";
 
+import FingerprintScanner from 'react-native-fingerprint-scanner';
+
 import HomeScreen from './HomeScreen';
 import PersonalInfoScreen from './PersonalInfoScreen';
 
@@ -21,16 +23,70 @@ class Login extends Component {
         cardImageSrc: "./res/1.jpg",
 
         passVisible : false,
+
+        biometryType : "",
+        errorMessageLegacy: "",
+        biometricLegacy : ""
     }
 
     componentDidMount() {
       LogBox.ignoreLogs(['Animated: `useNativeDriver`'])
+      this.checkBiometricAvailability();
     }
+
+    checkBiometricAvailability(){
+      FingerprintScanner
+      .isSensorAvailable()
+      .then(biometryType => this.setState({biometryType : biometryType}))
+      .catch(error => this.setState({ errorMessage: error.message }));
+    }
+
 
   render() {
     
     const loginClick = () =>{
-      this.props.navigation.navigate("BiometricAuthentication");
+      authenticate()
+    }
+
+    
+    const authenticate = () =>{
+      FingerprintScanner
+      .authenticate({ title: 'Biometric Authentication',onAttempt: handleAuthenticationAttemptedLegacy })
+      .then(() => {
+        console.log("Success")
+        bioMetricAuthenticated()
+        this.props.handlePopupDismissedLegacy();
+      })
+      .catch((error) => {
+        this.setState({ errorMessageLegacy: error.message, biometricLegacy: error.biometric });
+        //this.description.shake();
+      });
+    }
+
+    handleAuthenticationAttemptedLegacy = (error) => {
+      this.setState({ errorMessageLegacy: error.message });
+      //this.description.shake();
+    };
+
+    
+    const bioMetricAuthenticated = () =>{
+      this.setState({
+        isModalVisible : false
+      },
+      this.state.infoAdded ? (
+        this.props.navigation.reset(
+        {
+          index: 0,
+          routes: [{ name: 'HomeScreen' }],
+        })
+      ) : (
+        this.props.navigation.reset(
+        {
+          index: 0,
+          routes: [{ name: 'PersonalInfoScreen' }],
+        })
+      )
+      );
     }
 
     const setPassVisibility = () =>{
