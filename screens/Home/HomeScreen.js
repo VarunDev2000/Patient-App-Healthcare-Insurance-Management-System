@@ -112,7 +112,7 @@ class HomeScreen extends Component {
               <Icon name="notifications" size={24} color={colors.topBarIconColor} style={{marginRight:18,paddingLeft:10}}/>
               {
                 this.state.notification ? (
-                  <Icon2 name="primitive-dot" size={20} color="red" style={{paddingLeft:12.5,paddingBottom:20,position:"absolute"}}/>
+                  <Icon2 name="primitive-dot" size={20} color="red" style={{paddingLeft:22.3,paddingBottom:20,position:"absolute"}}/>
                 ) : (null)
               }
             </TouchableOpacity>
