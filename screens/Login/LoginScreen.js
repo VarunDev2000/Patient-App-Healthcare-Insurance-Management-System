@@ -9,6 +9,8 @@ import colors  from "../../config/colors";
 
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
+import BiometricModal from '../../Components/BiometricModal';
+
 import HomeScreen from '../Home/HomeScreen';
 import PersonalInfoScreen from './PersonalInfoScreen';
 
@@ -26,6 +28,7 @@ class LoginScreen extends Component {
         passVisible : false,
 
         biometryType : "",
+        fingerprintNotEnabled: false,
         errorMessageLegacy: "",
         biometricLegacy : ""
     }
@@ -36,11 +39,12 @@ class LoginScreen extends Component {
       this.checkBiometricAvailability();
     }
 
+
     checkBiometricAvailability(){
       FingerprintScanner
       .isSensorAvailable()
       .then(biometryType => this.setState({biometryType : biometryType}))
-      .catch(error => this.setState({ errorMessage: error.message }));
+      .catch(error => error.name == "FingerprintScannerNotEnrolled" ? (this.setState({biometryType : "Biometrics"})): (null));
     }
 
 
@@ -61,6 +65,12 @@ class LoginScreen extends Component {
       })
       .catch((error) => {
         console.log(error)
+
+        if(error.name == "FingerprintScannerNotEnrolled"){
+          this.setState({
+            fingerprintNotEnabled: true,
+          })
+        }
         this.setState({ errorMessageLegacy: error.message, biometricLegacy: error.biometric });
         FingerprintScanner.release();
         //this.description.shake();
@@ -99,6 +109,11 @@ class LoginScreen extends Component {
       })
     }
 
+    const closeModal = () =>{
+      this.setState({
+        fingerprintNotEnabled : false
+      })
+    }
 
     return (
       //this.state.biometryType == "Biometrics" ? (
@@ -158,6 +173,26 @@ class LoginScreen extends Component {
                 }>
                 <Text style = {styles.submitButtonText}> LOGIN </Text>
               </TouchableOpacity>
+
+              {
+              this.state.biometryType != "Biometrics" ? (
+                <BiometricModal
+                  type = "Biometry"
+                  isModalVisible = {true}
+                  closeModal = {closeModal}
+                  modalTitle = "Biometric not supported on this device"
+                  modelDesc = "Try installing the app on other device"
+                  opacity = {0.9}
+                />) : (null)
+              }
+
+              <BiometricModal
+                isModalVisible = {this.state.fingerprintNotEnabled}
+                closeModal = {closeModal}
+                modalTitle = "Fingerprint not enrolled"
+                modelDesc = "Try setting fingerprint authentication on your device"
+                opacity = {0.6}
+              />
 
             </KeyboardAwareView>
             </View>

@@ -169,11 +169,13 @@ const styles = StyleSheet.create({
       backgroundColor: colors.primary,
       padding: 10,
       alignSelf:"center",
-      height: 40,
+      height: 43,
       marginTop:15,
       borderRadius:3,
       marginBottom:20,
       elevation:5,
+      justifyContent:"center",
+      alignItems:"center"
     },
     submitButtonText:{
       color: 'white',
