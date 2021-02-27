@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { SafeAreaView, Dimensions, View, LogBox,
-  Text, TouchableOpacity, StyleSheet, StatusBar, TextInput,  Image, Keyboard  } from "react-native";
+import { Alert, Dimensions, View, LogBox,
+  Text, TouchableOpacity, StyleSheet, StatusBar, TextInput,  Image, BackHandler  } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
@@ -18,27 +18,50 @@ LogBox.ignoreLogs(['Warning: ...']);
 
 class LoginScreen extends Component {
 
-    state = {
-        infoAdded : false,
-        loggedIn : false,
+    constructor(props) {
+      super(props)
+      this.state = {
+          infoAdded : false,
+          loggedIn : false,
 
-        height: Dimensions.get("screen").height,
-        cardImageSrc: "./res/1.jpg",
+          height: Dimensions.get("screen").height,
+          cardImageSrc: "./res/1.jpg",
 
-        passVisible : false,
+          passVisible : false,
 
-        biometryType : "",
-        fingerprintNotEnabled: false,
-        errorMessageLegacy: "",
-        biometricLegacy : ""
+          biometryType : "",
+          fingerprintNotEnabled: false,
+          errorMessageLegacy: "",
+          biometricLegacy : ""
+      }
+      this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
-
 
     componentDidMount() {
       LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
       this.checkBiometricAvailability();
     }
 
+    UNSAFE_componentWillMount() {
+      BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+    
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+    
+    //Exit App
+    handleBackButtonClick() {
+      Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() }
+      ]);
+      return true;
+    }
 
     checkBiometricAvailability(){
       FingerprintScanner

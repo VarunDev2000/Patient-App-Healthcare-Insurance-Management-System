@@ -8,8 +8,6 @@ import HomeScreenNavigation from "./screens/Navigation";
 
 const Drawer = createDrawerNavigator();
 
-
-
 class App extends Component{
   render (){
     return(
