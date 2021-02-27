@@ -101,25 +101,12 @@ class LoginScreen extends Component {
 
 
     return (
+      //this.state.biometryType == "Biometrics" ? (
       this.state.loggedIn ? (this.state.infoAdded ? (<HomeScreen/>) :
       (<PersonalInfoScreen/>)):(
 
       <View style={{flex: 1, backgroundColor:"white"}}>
         <StatusBar backgroundColor="black" />
-
-        {
-          this.state.biometryType != "Biometrics" ? (
-            <View style={{flex : 1, justifyContent:"center",alignItems:'center',backgroundColor: 'rgba(0,0,0,0.4)' }}>
-              <View style={styles.noBioSupportLayout}>
-                <Text style={[styles.noBioTitle1,{marginBottom:0}]}>ERROR</Text>
-
-                <Image style={styles.noBioImage} source={require('./res/error-removebg-preview.png')}/>
-
-                <Text style={[styles.noBioTitle2,{color:"red"}]}>Biometric not supported on this device</Text>
-                <Text style={[styles.noBioDesc,{marginBottom : 25}]}>Try installing the app on other device</Text>
-              </View>
-            </View>
-          ) : (
 
         <View style={{flex:1}}>
         <KeyboardAwareView animated={true}>
@@ -174,10 +161,22 @@ class LoginScreen extends Component {
 
             </KeyboardAwareView>
             </View>
-          )
-          }
             </View>
       )
+      /*
+      ) : (
+        <View style={{flex : 1, justifyContent:"center",alignItems:'center',backgroundColor: 'rgba(0,0,0,0.4)' }}>
+        <View style={styles.noBioSupportLayout}>
+          <Text style={[styles.noBioTitle1,{marginBottom:0}]}>ERROR</Text>
+
+          <Image style={styles.noBioImage} source={require('./res/error-removebg-preview.png')}/>
+
+          <Text style={[styles.noBioTitle2,{color:"red"}]}>Biometric not supported on this device</Text>
+          <Text style={[styles.noBioDesc,{marginBottom : 25}]}>Try installing the app on other device</Text>
+        </View>
+      </View>
+      )
+      */
     );
   }
 }
