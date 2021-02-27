@@ -167,7 +167,7 @@ class LoginScreen extends Component {
 
             <View style={styles.textFieldStyle}>
               <Icon1 name="user" size={20} color="#858585" style={{paddingTop:11,paddingLeft:3,paddingRight:8}}/>
-              <TextInput style = {{width:"95%"}}
+              <TextInput style = {{width:"95%",fontWeight:"normal"}}
                 underlineColorAndroid = "transparent"
                 placeholder = "Username"
                 placeholderTextColor = "#858585"
@@ -177,7 +177,7 @@ class LoginScreen extends Component {
 
             <View style={styles.textFieldStyle}>
               <Icon name="ios-lock-closed" size={21} color="#858585" style={{paddingTop:9,paddingLeft:2,paddingRight:3}}/>
-              <TextInput style={{width:"85%"}}
+              <TextInput style={{width:"85%",fontWeight:"normal"}}
                 secureTextEntry={!this.state.passVisible}
                 underlineColorAndroid = "transparent"
                 placeholder = "Password"

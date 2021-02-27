@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import { SafeAreaView, Dimensions, View, LogBox,
   Text, TouchableOpacity, StyleSheet, StatusBar, FlatList,  Image  } from "react-native";
-import { CommonActions } from '@react-navigation/native';
 import CardView from 'react-native-cardview';
 import { ScrollView } from "react-native-gesture-handler";
-import Icon from 'react-native-vector-icons/Ionicons';
 import IndexTable from '../../Components/IndexTable';
 import BillTable from '../../Components/BillTable';
 
+import Icon from 'react-native-vector-icons/Ionicons';
+import Icon1 from 'react-native-vector-icons/Octicons';
+
 import colors  from "../../config/colors";
+
+import NotificationModal from '../../Components/NotificationModal';
 
 LogBox.ignoreLogs(['Warning: ...']);
 
@@ -60,6 +63,9 @@ class ProfileScreen extends Component {
         tableData: [['Varun'],['06-05-2000'],['9087654321'],['O +ve']],
 
         billTableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE'],
+
+        notification: true,
+        notificationModalVisible: false,
     }
 
     setSelected(id){
@@ -102,8 +108,17 @@ class ProfileScreen extends Component {
         </CardView>
       );
 
-      const logOut = () => {
-        this.props.navigation.navigate("LoginScreen")
+      const notificationClick = () =>{
+        this.setState({
+          notificationModalVisible:true,
+          notification:false
+        })
+      }
+      const closeModal = () =>{
+        this.setState({
+          notification : false,
+          notificationModalVisible: false
+        })
       }
 
     return (
@@ -111,11 +126,16 @@ class ProfileScreen extends Component {
         <StatusBar backgroundColor="black" />
         <View style={styles.topLayout}>
           <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.toggleDrawer()}>
-            <Icon name="menu-sharp" size={28} color={colors.topBarIconColor} style={{marginLeft:18}}/>
+            <Icon name="menu-sharp" size={28} color={colors.topBarIconColor} style={{marginLeft:18,paddingRight:10}}/>
           </TouchableOpacity>
           <Text style={styles.pageTitle}> PROFILE </Text>
-          <TouchableOpacity activeOpacity={.8} onPress={null}>
-            <Icon name="notifications" size={25} color={colors.topBarIconColor} style={{marginRight:18}}/>
+          <TouchableOpacity activeOpacity={.8} onPress={() => notificationClick()}>
+            <Icon name="notifications" size={24} color={colors.topBarIconColor} style={{marginRight:18,paddingLeft:10}}/>
+            {
+              this.state.notification ? (
+                <Icon1 name="primitive-dot" size={20} color="red" style={{paddingLeft:12.5,paddingBottom:20,position:"absolute"}}/>
+              ) : (null)
+            }
           </TouchableOpacity>
         </View>
 
@@ -144,9 +164,13 @@ class ProfileScreen extends Component {
                               tableTitle = {this.state.tableTitle}
                               tableData = {this.state.tableData}
                             />
+                            {
+                            /*
                             <TouchableOpacity activeOpacity={.6} onPress={logOut}>
                               <Text style={styles.logoutStyle}>LOG OUT</Text>
                             </TouchableOpacity>
+                            */ 
+                            }
                         </View>
                       </ScrollView>
                     </View>
@@ -168,6 +192,14 @@ class ProfileScreen extends Component {
                   </CardView>
                 )
             }
+
+          <NotificationModal
+            isModalVisible = {this.state.notificationModalVisible}
+            closeModal = {closeModal}
+            modalTitle = "Fingerprint not enrolled"
+            modelDesc = "Try setting fingerprint authentication on your device"
+            opacity = {0.6}
+          />
 
         </SafeAreaView>
     );

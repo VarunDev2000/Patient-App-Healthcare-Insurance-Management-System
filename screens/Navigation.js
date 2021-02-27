@@ -8,9 +8,11 @@ import AllBills from "./Bills/AllBills";
 import NewBill from "./Bills/NewBill";
 import ProfileScreen from "./Profile/ProfileScreen";
 
+import DrawerContent from "./Drawer/DrawerContent"
+
 const Stack = createStackNavigator();
 
-class HomeScreenNavigation extends Component {
+class Navigation extends Component {
   render() {
     return (
       <>
@@ -25,10 +27,12 @@ class HomeScreenNavigation extends Component {
           <Stack.Screen name="AllBills" component={AllBills} />
           <Stack.Screen name="NewBill" component={NewBill} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+
+          <Stack.Screen name="DrawerContent" component={DrawerContent} />
         </Stack.Navigator>
       </>
     );
   }
 }
 
-export default HomeScreenNavigation;
+export default Navigation;

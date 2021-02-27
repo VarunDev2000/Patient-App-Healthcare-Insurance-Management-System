@@ -5,7 +5,10 @@ import CardView from 'react-native-cardview';
 import { ScrollView } from "react-native-gesture-handler";
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
+import Icon2 from 'react-native-vector-icons/Octicons';
 import BillTable from '../../Components/BillTable';
+
+import NotificationModal from '../../Components/NotificationModal';
 
 import colors  from "../../config/colors";
 
@@ -48,6 +51,9 @@ class HomeScreen extends Component {
     state = {
         height: Dimensions.get("screen").height,
         tableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE','STATUS'],
+
+        notification: true,
+        notificationModalVisible: false,
     }
 
   render() {
@@ -79,49 +85,76 @@ class HomeScreen extends Component {
           />
       </CardView>
     );
+    
+    const notificationClick = () =>{
+      this.setState({
+        notificationModalVisible:true,
+        notification:false
+      })
+    }
+    const closeModal = () =>{
+      this.setState({
+        notification : false,
+        notificationModalVisible: false
+      })
+    }
 
     return (
         <SafeAreaView style={{ height: this.state.height,backgroundColor: colors.bgColor }}>
         <StatusBar backgroundColor="black" />
         <View style={{flex:1}}>
-        <View style={styles.topLayout}>
-          <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.toggleDrawer()}>
-            <Icon name="menu-sharp" size={28} color={colors.topBarIconColor} style={{marginLeft:18}}/>
-          </TouchableOpacity>
-          <Text style={styles.pageTitle}> HOME </Text>
-          <TouchableOpacity activeOpacity={.8} onPress={null}>
-            <Icon name="notifications" size={25} color={colors.topBarIconColor} style={{marginRight:18}}/>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.topLayout}>
+            <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.toggleDrawer()}>
+              <Icon name="menu-sharp" size={28} color={colors.topBarIconColor} style={{marginLeft:18,paddingRight:10}}/>
+            </TouchableOpacity>
+            <Text style={styles.pageTitle}> HOME </Text>
+            <TouchableOpacity activeOpacity={.8} onPress={() => notificationClick()}>
+              <Icon name="notifications" size={24} color={colors.topBarIconColor} style={{marginRight:18,paddingLeft:10}}/>
+              {
+                this.state.notification ? (
+                  <Icon2 name="primitive-dot" size={20} color="red" style={{paddingLeft:12.5,paddingBottom:20,position:"absolute"}}/>
+                ) : (null)
+              }
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.middleLayout1}>
-          <FlatList
-          data={BILL_BUTTON_DATA}
-          renderItem={billButtonItem}
-          keyExtractor={item => item.id}
-          numColumns={2}
-          columnWrapperStyle={{justifyContent: 'space-between'}}
-        />
-        </View>
-
-      <CardView
-        style={styles.middleLayout2}
-        cardElevation={2}
-        cardMaxElevation={2}
-        cornerRadius={0}>
-          <View>
-            <ScrollView style={{padding:10}}>
-                <Text style={{fontSize:14,color:"black",fontWeight:"bold",textAlign:"center"}}>RECENT BILLS</Text>
-            </ScrollView>
-           </View>
-        </CardView>
-
-          <FlatList
-            contentContainerStyle={styles.bottomLayout}
-            data={BILL_DATA}
-            renderItem={currentBillsItem}
+          <View style={styles.middleLayout1}>
+            <FlatList
+            data={BILL_BUTTON_DATA}
+            renderItem={billButtonItem}
             keyExtractor={item => item.id}
+            numColumns={2}
+            columnWrapperStyle={{justifyContent: 'space-between'}}
           />
+          </View>
+
+        <CardView
+          style={styles.middleLayout2}
+          cardElevation={2}
+          cardMaxElevation={2}
+          cornerRadius={0}>
+            <View>
+              <ScrollView style={{padding:10}}>
+                  <Text style={{fontSize:14,color:"black",fontWeight:"bold",textAlign:"center"}}>RECENT BILLS</Text>
+              </ScrollView>
+            </View>
+          </CardView>
+
+            <FlatList
+              contentContainerStyle={styles.bottomLayout}
+              data={BILL_DATA}
+              renderItem={currentBillsItem}
+              keyExtractor={item => item.id}
+            />
+
+            <NotificationModal
+              isModalVisible = {this.state.notificationModalVisible}
+              closeModal = {closeModal}
+              modalTitle = "Fingerprint not enrolled"
+              modelDesc = "Try setting fingerprint authentication on your device"
+              opacity = {0.6}
+            />
+
         </View>
 
         </SafeAreaView>
