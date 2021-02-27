@@ -6,7 +6,7 @@ import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
 import colors  from "../../config/colors";
 
-import HomeScreen from './HomeScreen';
+import HomeScreen from '../Home/HomeScreen';
 
 LogBox.ignoreLogs(['Warning: ...']);
 

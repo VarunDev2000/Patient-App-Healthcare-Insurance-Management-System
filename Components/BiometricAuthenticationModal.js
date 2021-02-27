@@ -20,7 +20,7 @@ class BiometricAuthenticationModal extends Component {
   }
 
   componentDidMount() {
-    this.checkBiometricAvailability();
+    //this.checkBiometricAvailability();
   }
 
   checkBiometricAvailability(){
@@ -71,7 +71,7 @@ class BiometricAuthenticationModal extends Component {
     <Modal
       isVisible={this.props.isModalVisible}
       animationIn={fadeIn}
-      animationInTiming={400}
+      animationInTiming={30}
       animationOut= {fadeOut}
       animationOutTiming={200}
       backdropTransitionOutTiming={0}
@@ -97,25 +97,19 @@ class BiometricAuthenticationModal extends Component {
               <TouchableOpacity style={styles.buttonOuterLayerStyle} activeOpacity={.6} onPress={closeModal}>
                 <Text style={styles.buttonStyle}>CANCEL </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonOuterLayerStyle} activeOpacity={.6} onPress={this.props.bioMetricAuthenticated}>
+              <TouchableOpacity style={styles.buttonOuterLayerStyle} activeOpacity={.6} onPress={null}>
                 <Text style={[styles.buttonStyle,{color:"green"}]}>SKIP </Text>
               </TouchableOpacity>
             </View>
           </View>
           ) : (
             <View>
-              <Text style={[styles.modalTitle1,{marginBottom:0}]}>BIOMETRIC AUTHENTICATION</Text>
+              <Text style={[styles.modalTitle1,{marginBottom:0}]}>ERROR</Text>
 
               <Image style={styles.modalImage} source={require('./res/error-removebg-preview.png')}/>
 
               <Text style={[styles.modalTitle2,{color:"red"}]}>Biometric not supported on this device</Text>
-              <Text style={styles.modalDesc}>Try using the app on other device</Text>
-
-            <View style={{flexDirection:"row",justifyContent:"space-between",marginTop:20}}>
-              <TouchableOpacity style={styles.buttonOuterLayerStyle} activeOpacity={.6} onPress={closeModal}>
-                <Text style={[styles.buttonStyle,{color:"black"}]}>GO BACK </Text>
-              </TouchableOpacity>
-            </View>
+              <Text style={[styles.modalDesc,{marginBottom : 25}]}>Try installing the app on other device</Text>
           </View>
           )
         }

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { SafeAreaView, Dimensions, View, LogBox,
   Text, TouchableOpacity, StyleSheet, StatusBar, FlatList,  Image  } from "react-native";
+import { CommonActions } from '@react-navigation/native';
 import CardView from 'react-native-cardview';
 import { ScrollView } from "react-native-gesture-handler";
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -101,6 +102,10 @@ class ProfileScreen extends Component {
         </CardView>
       );
 
+      const logOut = () => {
+        this.props.navigation.navigate("LoginScreen")
+      }
+
     return (
         <SafeAreaView style={{ height: this.state.height,backgroundColor: colors.bgColor }}>
         <StatusBar backgroundColor="black" />
@@ -139,7 +144,9 @@ class ProfileScreen extends Component {
                               tableTitle = {this.state.tableTitle}
                               tableData = {this.state.tableData}
                             />
-                            <Text style={styles.logoutStyle}>LOG OUT</Text>
+                            <TouchableOpacity activeOpacity={.6} onPress={logOut}>
+                              <Text style={styles.logoutStyle}>LOG OUT</Text>
+                            </TouchableOpacity>
                         </View>
                       </ScrollView>
                     </View>

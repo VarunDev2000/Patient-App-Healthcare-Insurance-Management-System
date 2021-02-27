@@ -5,9 +5,9 @@ import CardView from 'react-native-cardview';
 import { ScrollView } from "react-native-gesture-handler";
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
-import BillTable from '../Components/BillTable';
+import BillTable from '../../Components/BillTable';
 
-import colors  from "../config/colors";
+import colors  from "../../config/colors";
 
 const BILL_DATA = [
   {

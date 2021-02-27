@@ -2,18 +2,19 @@ import React, { Component } from "react";
 import { SafeAreaView, Dimensions, View, LogBox,
   Text, TouchableOpacity, StyleSheet, StatusBar, TextInput,  Image, Keyboard  } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
+import Icon1 from 'react-native-vector-icons/FontAwesome';
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
 import colors  from "../../config/colors";
 
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
-import HomeScreen from './HomeScreen';
+import HomeScreen from '../Home/HomeScreen';
 import PersonalInfoScreen from './PersonalInfoScreen';
 
 LogBox.ignoreLogs(['Warning: ...']);
 
-class Login extends Component {
+class LoginScreen extends Component {
 
     state = {
         infoAdded : false,
@@ -29,8 +30,9 @@ class Login extends Component {
         biometricLegacy : ""
     }
 
+
     componentDidMount() {
-      LogBox.ignoreLogs(['Animated: `useNativeDriver`'])
+      LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
       this.checkBiometricAvailability();
     }
 
@@ -43,27 +45,29 @@ class Login extends Component {
 
 
   render() {
-    
+
     const loginClick = () =>{
       authenticate()
     }
 
-    
     const authenticate = () =>{
       FingerprintScanner
       .authenticate({ title: 'Biometric Authentication',onAttempt: handleAuthenticationAttemptedLegacy })
       .then(() => {
         console.log("Success")
+        FingerprintScanner.release();
         bioMetricAuthenticated()
-        this.props.handlePopupDismissedLegacy();
+        //this.props.handlePopupDismissedLegacy();
       })
       .catch((error) => {
+        console.log(error)
         this.setState({ errorMessageLegacy: error.message, biometricLegacy: error.biometric });
+        FingerprintScanner.release();
         //this.description.shake();
       });
     }
 
-    handleAuthenticationAttemptedLegacy = (error) => {
+    const handleAuthenticationAttemptedLegacy = (error) => {
       this.setState({ errorMessageLegacy: error.message });
       //this.description.shake();
     };
@@ -102,10 +106,22 @@ class Login extends Component {
 
       <View style={{flex: 1, backgroundColor:"white"}}>
         <StatusBar backgroundColor="black" />
-        <View style={{
-          flex:1,
-        }}>
 
+        {
+          this.state.biometryType != "Biometrics" ? (
+            <View style={{flex : 1, justifyContent:"center",alignItems:'center',backgroundColor: 'rgba(0,0,0,0.4)' }}>
+              <View style={styles.noBioSupportLayout}>
+                <Text style={[styles.noBioTitle1,{marginBottom:0}]}>ERROR</Text>
+
+                <Image style={styles.noBioImage} source={require('./res/error-removebg-preview.png')}/>
+
+                <Text style={[styles.noBioTitle2,{color:"red"}]}>Biometric not supported on this device</Text>
+                <Text style={[styles.noBioDesc,{marginBottom : 25}]}>Try installing the app on other device</Text>
+              </View>
+            </View>
+          ) : (
+
+        <View style={{flex:1}}>
         <KeyboardAwareView animated={true}>
         <View style={{flex: 1}}>
         <ScrollView style={{flex: 1}}>
@@ -116,15 +132,19 @@ class Login extends Component {
 
         <Text style={styles.pageTitle}>LOG IN</Text>
 
-            <TextInput style = {styles.input}
-              underlineColorAndroid = "transparent"
-              placeholder = "Username"
-              placeholderTextColor = "#858585"
-              autoCapitalize = "none"
-              onChangeText = {null}/>
+            <View style={styles.textFieldStyle}>
+              <Icon1 name="user" size={20} color="#858585" style={{paddingTop:11,paddingLeft:3,paddingRight:8}}/>
+              <TextInput style = {{width:"95%"}}
+                underlineColorAndroid = "transparent"
+                placeholder = "Username"
+                placeholderTextColor = "#858585"
+                autoCapitalize = "none"
+                onChangeText = {null}/>
+            </View>
 
-            <View style={styles.passwordFieldStyle}>
-              <TextInput style={{width:"93%"}}
+            <View style={styles.textFieldStyle}>
+              <Icon name="ios-lock-closed" size={21} color="#858585" style={{paddingTop:9,paddingLeft:2,paddingRight:3}}/>
+              <TextInput style={{width:"85%"}}
                 secureTextEntry={!this.state.passVisible}
                 underlineColorAndroid = "transparent"
                 placeholder = "Password"
@@ -133,9 +153,9 @@ class Login extends Component {
                 onChangeText = {null}/>
               <TouchableOpacity activeOpacity={.7} onPress={setPassVisibility}>
                 {this.state.passVisible ? (
-                  <Icon name="eye-off-sharp" size={23} color="#a3a3a3" style={{paddingTop:8,paddingLeft:3}}/>
+                  <Icon name="eye-off-sharp" size={22} color="#a3a3a3" style={{paddingTop:10,paddingLeft:3}}/>
                 ) : (
-                  <Icon name="eye-sharp" size={23} color="#a3a3a3" style={{paddingTop:8,paddingLeft:3}}/>
+                  <Icon name="eye-sharp" size={22} color="#a3a3a3" style={{paddingTop:10,paddingLeft:3}}/>
                 )}
                 </TouchableOpacity>
             </View>
@@ -152,9 +172,10 @@ class Login extends Component {
                 <Text style = {styles.submitButtonText}> LOGIN </Text>
               </TouchableOpacity>
 
-
             </KeyboardAwareView>
             </View>
+          )
+          }
             </View>
       )
     );
@@ -162,6 +183,42 @@ class Login extends Component {
 }
 
 const styles = StyleSheet.create({
+    noBioSupportLayout: {
+      flex: 0,
+      width:"88%",
+      backgroundColor: colors.secondary,
+      padding: 30,
+      paddingBottom: 20,
+      borderRadius: 10,
+      marginTop: 30,
+      marginBottom: 30,
+      elevation:20
+    },
+    noBioTitle1: {
+      fontSize:17,
+      fontWeight:"bold",
+      textAlign:"center",
+      marginBottom:"3%"
+    },
+    noBioTitle2: {
+      fontSize:15,
+      textAlign:"center",
+      marginBottom:"2.5%",
+    },  
+    noBioDesc: {
+      color:"black",
+      fontSize:12,
+      fontStyle:"italic",
+      textAlign:"center",
+      marginBottom:"1%"
+    }, 
+    noBioImage: {
+      width:"45%",
+      height:200,
+      alignSelf:"center", 
+      marginBottom:0,
+      resizeMode:"contain",
+    }, 
     cardImage: {
       width:"50%",
       height:220,
@@ -183,7 +240,7 @@ const styles = StyleSheet.create({
       paddingRight:10,
       color: 'black'
     },
-    passwordFieldStyle: {
+    textFieldStyle: {
       flex:0,
       flexDirection:"row",
       width:"95%",
@@ -224,4 +281,6 @@ const styles = StyleSheet.create({
       color:colors.primary,
     },
   });
-export default Login;
+
+  
+export default LoginScreen;
