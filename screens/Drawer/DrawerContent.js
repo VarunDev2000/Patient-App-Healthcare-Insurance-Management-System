@@ -44,8 +44,8 @@ class DrawerContent extends Component {
                                 style={{marginTop:0,backgroundColor:"white"}}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Title style={styles.title}>Varun</Title>
-                                <Caption style={styles.caption}>06/05/2000</Caption>
+                                <Title style={styles.title}>Patient 1</Title>
+                                <Caption style={styles.caption}>(+91) 9876543210</Caption>
                             </View>
                         </View>
 
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     caption: {
-      fontSize: 14,
+      fontSize: 12,
       lineHeight: 14,
     },
     row: {

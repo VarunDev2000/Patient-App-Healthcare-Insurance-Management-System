@@ -60,7 +60,7 @@ class ProfileScreen extends Component {
         profilePic : require('./res/profilepic.jpg'),
 
         tableTitle: ['Name', 'DOB', 'Mobile No', 'Blood Grp'],
-        tableData: [['Varun'],['06-05-2000'],['9087654321'],['O +ve']],
+        tableData: [['Patient 1'],['06-10-1980'],['9876543210'],['O +ve']],
 
         billTableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE'],
 
