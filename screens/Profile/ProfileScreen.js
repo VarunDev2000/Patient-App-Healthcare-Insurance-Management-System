@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { SafeAreaView, Dimensions, View, LogBox,
-  Text, TouchableOpacity, StyleSheet, StatusBar, FlatList,  Image  } from "react-native";
+  Text, TouchableOpacity, StyleSheet, StatusBar, FlatList,  Image, Alert, BackHandler  } from "react-native";
 import CardView from 'react-native-cardview';
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from '@react-native-community/async-storage';
@@ -50,6 +50,8 @@ class ProfileScreen extends Component {
 
         notification: true,
         notificationModalVisible: false,
+
+        error : "",
     }
 
     componentDidMount(){
@@ -127,6 +129,9 @@ class ProfileScreen extends Component {
           }
         )
       } catch(e) {
+        this.setState({
+          error : err
+        })
         console.error("Cannot fetch data from storage " + e)
       }
     }
@@ -157,7 +162,10 @@ class ProfileScreen extends Component {
         //console.log(res)
       })
       .catch((err) => {
-          console.log('err', err.message)
+        this.setState({
+          error : err
+        })
+        console.log('err', err.message)
       })
     }
 
@@ -182,7 +190,10 @@ class ProfileScreen extends Component {
           //console.log(res)
       })
       .catch((err) => {
-          console.log('err', err.message)
+        this.setState({
+          error : err
+        })
+        console.log('err', err.message)
       })
     }
 
@@ -223,7 +234,17 @@ class ProfileScreen extends Component {
         })
       }
 
+      const infoModalPopup = () => {
+        Alert.alert("Network Error", "Cannot cannot to network. Try again later", [
+          { text: "OK", 
+          onPress: () => BackHandler.exitApp()
+          }
+        ]);
+        return true;
+      }
+
     return (
+      this.state.error != "" ? (infoModalPopup()) : (
         <SafeAreaView style={{ height: this.state.height,backgroundColor: colors.bgColor }}>
         <StatusBar backgroundColor="black" />
         <View style={styles.topLayout}>
@@ -309,6 +330,7 @@ class ProfileScreen extends Component {
           />
 
         </SafeAreaView>
+      )
     );
   }
 }

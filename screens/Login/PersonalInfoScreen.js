@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { SafeAreaView, Dimensions, View, LogBox,
-  Text, TouchableOpacity, StyleSheet, StatusBar, TextInput  } from "react-native";
+import { Alert, Dimensions, View, LogBox,
+  Text, TouchableOpacity, StyleSheet, StatusBar, TextInput, BackHandler  } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
@@ -30,7 +30,9 @@ class PersonalInfoScreen extends Component {
 
         nameF: null,
         mobileNoF: null,
-        bloodGrpF: null
+        bloodGrpF: null,
+
+        error : "",
     }
 
     componentDidMount() {
@@ -74,10 +76,10 @@ class PersonalInfoScreen extends Component {
         //console.log(res)
       })
       .catch((err) => {
-          this.setState({
-            data : null
-          })
-          console.log('err', err.message)
+        this.setState({
+          error : err
+        })
+        console.log('err', err.message)
       })
     }
 
@@ -110,11 +112,20 @@ class PersonalInfoScreen extends Component {
       console.log(currentDate);
     };
 
+    const infoModalPopup = () => {
+      Alert.alert("Network Error", "Cannot cannot to network. Try again later", [
+        { text: "OK", 
+        onPress: () => BackHandler.exitApp()
+        }
+      ]);
+      return true;
+    }
+
 
     return (
-      this.state.data[4] == false | this.state.data == null ? (
-
-      <View style={{flex: 1, backgroundColor:"white"}}>
+      this.state.error != "" ? (infoModalPopup()) : (
+      this.state.data.length <=0 | this.state.data[4] == false ? (
+        <View style={{flex: 1, backgroundColor:"white"}}>
         <StatusBar backgroundColor="black" />
         <View style={{
           flex:1,
@@ -194,8 +205,9 @@ class PersonalInfoScreen extends Component {
             </KeyboardAwareView>
             </View>
             </View>
-      ) : (<HomeScreen navigation = {this.props.navigation} />)
-    );
+      ) : (<HomeScreen navigation = {this.props.navigation} />
+    ))
+    )
   }
 }
 

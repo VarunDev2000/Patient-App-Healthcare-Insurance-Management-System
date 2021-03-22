@@ -29,6 +29,8 @@ class NewBill extends Component {
       LogBox.ignoreLogs(['Animated: `useNativeDriver`'])
     }
 
+ 
+
   render() {
 
     const onDateFieldClick = () => {
