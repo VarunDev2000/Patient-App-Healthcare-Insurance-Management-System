@@ -4,18 +4,21 @@ import { SafeAreaView, Dimensions, View, LogBox,
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from '@react-native-community/async-storage';
 import colors  from "../../config/colors";
 
 import HomeScreen from '../Home/HomeScreen';
 
 
 
-LogBox.ignoreLogs(['Warning: ...']);
+//LogBox.ignoreLogs(['Warning: ...']);
 
 class PersonalInfoScreen extends Component {
 
     state = {
         loggedIn : false,
+
+        data : [],
 
         height: Dimensions.get("screen").height,
         cardImageSrc: "./res/1.jpg",
@@ -31,6 +34,28 @@ class PersonalInfoScreen extends Component {
 
     componentDidMount() {
       LogBox.ignoreLogs(['Animated: `useNativeDriver`'])
+      this.getPersonalDetailsData()
+    }
+
+    getPersonalDetailsData = () =>{
+      const config = {
+        method: 'GET',
+        headers: {
+              'Content-Type': 'application/json'
+          },
+      };
+
+      fetch(`${CREDENTIALS.BASE_URL}/api/pdetails`, config)
+      .then((resp) => resp.json())
+      .then((res) => {
+          this.setState({
+            data : res
+          })
+          console.log(res)
+      })
+      .catch((err) => {
+          console.log('err', err.message)
+      })
     }
 
   render() {
@@ -64,7 +89,7 @@ class PersonalInfoScreen extends Component {
 
 
     return (
-      this.state.loggedIn ? (<HomeScreen/>):(
+      this.state.data[4] ? (<HomeScreen navigation = {this.props.navigation} />):(
 
       <View style={{flex: 1, backgroundColor:"white"}}>
         <StatusBar backgroundColor="black" />
@@ -134,8 +159,7 @@ class PersonalInfoScreen extends Component {
                 activeOpacity={.7}
                 style = {styles.submitButton}
                 onPress = {
-                  () => this.props
-                  .navigation.reset(
+                  () => this.props.navigation.reset(
                     {
                        index: 0,
                        routes: [{ name: 'HomeScreen' }],

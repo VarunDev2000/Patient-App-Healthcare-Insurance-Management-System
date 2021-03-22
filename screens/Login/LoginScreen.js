@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from '@react-native-community/async-storage';
 import colors  from "../../config/colors";
 
 import ErrorField from '../../Components/ErrorField';
@@ -51,7 +52,9 @@ class LoginScreen extends Component {
 
     componentDidMount() {
       LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
-      this.checkBiometricAvailability();
+
+      this.getLoginData();
+      //this.checkBiometricAvailability();
     }
 
     UNSAFE_componentWillMount() {
@@ -73,6 +76,25 @@ class LoginScreen extends Component {
         { text: "YES", onPress: () => BackHandler.exitApp() }
       ]);
       return true;
+    }
+
+    getLoginData = async () => {
+      try {
+        const loggedIn = await AsyncStorage.getItem('loggedIn')
+        console.log(loggedIn)
+
+        if(loggedIn != null) {
+          const data = JSON.parse(loggedIn)
+          this.setState({
+            loggedIn : data,
+          })
+        }
+        if (loggedIn != "true"){
+          this.checkBiometricAvailability();
+        }
+      } catch(e) {
+        console.error("Cannot fetch data from storage " + e)
+      }
     }
 
     checkBiometricAvailability(){
@@ -163,6 +185,16 @@ class LoginScreen extends Component {
 
     
     const bioMetricAuthenticated = async () =>{
+    //Store in local storage
+    try {
+      const jsonValue1 = JSON.stringify(this.state.username)
+      const jsonValue2 = JSON.stringify(true)
+      await AsyncStorage.setItem("account", jsonValue1)
+      await AsyncStorage.setItem("loggedIn", jsonValue2)
+    } catch (e) {
+      console.error("Cannot store data to storage")
+    }
+
     this.setState({
       isModalVisible : false
     },
@@ -198,10 +230,10 @@ class LoginScreen extends Component {
     {
       if(this.state.infoAdded)
       {
-        return <HomeScreen/>
+        return <HomeScreen navigation={this.props.navigation}/>
       }
       else{
-        return <PersonalInfoScreen/>
+        return <PersonalInfoScreen navigation={this.props.navigation}/>
       }
     }
     else{

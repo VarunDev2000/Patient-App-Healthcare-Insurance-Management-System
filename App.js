@@ -15,8 +15,8 @@ import Icon2 from 'react-native-vector-icons/FontAwesome5';
 const Drawer = createDrawerNavigator();
 
 //For Warnings
-LogBox.ignoreLogs(['Warning:']);
-console.reportErrorsAsExceptions = false;
+//LogBox.ignoreLogs(['Warning:']);
+//console.reportErrorsAsExceptions = false;
 
 
 class App extends Component{

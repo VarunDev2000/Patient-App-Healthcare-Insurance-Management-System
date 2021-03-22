@@ -11,23 +11,41 @@ import {
     DrawerItem,
     DrawerItemList
 } from '@react-navigation/drawer';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Octicons';
 
 
 class DrawerContent extends Component {
 
-    logOut() {
-        Alert.alert("Log Out", "Are you sure you want to log out?", [
-          {
-            text: "No",
-            onPress: () => null,
-            style: "cancel"
-          },
-          { text: "YES", onPress: () => this.props.navigation.navigate("LoginScreen") }
-        ]);
-        return true;
+    logOutModalPopup = () => {
+      Alert.alert("Log Out", "Are you sure you want to log out?", [
+        {
+          text: "No",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "YES", 
+          onPress: () => this.logOut()
+        }
+      ]);
+      return true;
+    }
+
+    logOut = async () => {
+      //Store in local storage
+      try {
+        const jsonValue1 = JSON.stringify("")
+        const jsonValue2 = JSON.stringify(false)
+        await AsyncStorage.setItem("account", jsonValue1)
+        await AsyncStorage.setItem("loggedIn", jsonValue2)
+
+        //Redirect to login page
+        this.props.navigation.navigate("LoginScreen")
+      } catch (e) {
+        console.error("Cannot store data to storage")
       }
+    }
+
 
     render() {
     return(
@@ -85,7 +103,7 @@ class DrawerContent extends Component {
                         />
                     )}
                     label= {config => <Text>Sign Out</Text>}
-                    onPress={() => this.logOut()}
+                    onPress={() => this.logOutModalPopup()}
                 />
             </View>
         </View>
