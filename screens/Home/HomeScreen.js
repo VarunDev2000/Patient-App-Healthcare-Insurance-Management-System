@@ -26,26 +26,11 @@ const BILL_BUTTON_DATA = [
   },
   {
     id: '2',
-    card_heading: 'ALL BILLS',
-    img: require('./res/allBills.jpg'),
-    nav: 'AllBills',
+    card_heading: 'OLD BILLS',
+    img: require('./res/oldBills.jpg'),
+    nav: 'OldBills',
   },
 
-];
-
-const BILL_DATA = [
-  {
-    id: '1',
-    tableData: [['23'],['Ultrasound'],['06-05-2020'],['Apollo Hospital'],['Rs.1000'],[<View style={{flexDirection:"row"}}><Icon name="time" size={23} color="#c9c930" style={{marginLeft:12}}/><Text style={{marginLeft:5,fontWeight:"bold",marginTop:2,color:"#c9c930"}}>WAITING </Text></View>]]
-  },
-  {
-    id: '2',
-    tableData: [['52'],['Brain scanning'],['12-10-2020'],['Apollo Hospital'],['Rs.4000'],[<View style={{flexDirection:"row"}}><Icon name="checkmark-circle" size={23} color="green" style={{marginLeft:12}}/><Text style={{marginLeft:5,fontWeight:"bold",marginTop:2,color:"green"}}>ACCEPTED </Text></View>]]
-  },
-  {
-    id: '3',
-    tableData: [['91'],['Skin test'],['06-01-2021'],['Apollo Hospital'],['Rs.8000'],[<View style={{flexDirection:"row"}}><Icon1 name="cancel" size={23} color="red" style={{marginLeft:12}}/><Text style={{marginLeft:5,fontWeight:"bold",marginTop:2,color:"red"}}>REJECTED </Text></View>]]
-  },
 ];
 
 

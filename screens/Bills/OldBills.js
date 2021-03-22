@@ -9,7 +9,7 @@ import BillTable from '../../Components/BillTable';
 import colors  from "../../config/colors";
 
 
-class AllBills extends Component {
+class OldBills extends Component {
     state = {
         height: Dimensions.get("screen").height,
 
@@ -29,33 +29,32 @@ class AllBills extends Component {
       let billData = [];
 
       for(var i = 0; i < data.length; i++){
-        if(data[i][7] === account){
-          let temp = {};
-          temp['id'] =  (i+1).toString();
-
-          temp['tableData'] = [];
-          temp['tableData'].push([data[i][0]])
-          temp['tableData'].push([data[i][3]])
-          temp['tableData'].push([data[i][4]])
-          temp['tableData'].push([data[i][5]])
-          temp['tableData'].push([data[i][1]])
-          
+        if(data[i][7] === account)
+        {
           var status = data[i][8] ? ("Approved") : (data[i][9] ? ("Rejected") : ("Pending"))
+          if(status !== "Pending"){
+            let temp = {};
+            temp['id'] =  (i+1).toString();
 
-          if(status === "Approved")
-          {
-            temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="checkmark-circle" size={23} color="green" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"green"}}>APPROVED </Text></View>])
-          }
-          else if(status === "Rejected")
-          {
-            temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon1 name="cancel" size={23} color="red" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"red"}}>REJECTED </Text></View>])
-          }
-          else if(status === "Pending")
-          {
-            temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="time" size={23} color="#c9c930" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"#c9c930"}}>PENDING </Text></View>])
-          }
+            temp['tableData'] = [];
+            temp['tableData'].push([data[i][0]])
+            temp['tableData'].push([data[i][3]])
+            temp['tableData'].push([data[i][4]])
+            temp['tableData'].push([data[i][5]])
+            temp['tableData'].push([data[i][1]])
+          
 
-          billData.push(temp)
+            if(status === "Approved")
+            {
+              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="checkmark-circle" size={23} color="green" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"green"}}>APPROVED </Text></View>])
+            }
+            else if(status === "Rejected")
+            {
+              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon1 name="cancel" size={23} color="red" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"red"}}>REJECTED </Text></View>])
+            }
+
+            billData.push(temp)
+          }
         }
       }
 
@@ -88,7 +87,7 @@ class AllBills extends Component {
           <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.goBack()}>
             <Icon name="arrow-back-sharp" size={30} color={colors.topBarIconColor} style={{marginLeft:18}}/>
           </TouchableOpacity>
-          <Text style={styles.pageTitle}> ALL  BILLS </Text>
+          <Text style={styles.pageTitle}> OLD  BILLS </Text>
           <TouchableOpacity activeOpacity={1} onPress={null}>
             <Icon name="notifications" size={25} color="black" style={{marginRight:18}}/>
           </TouchableOpacity>
@@ -162,4 +161,4 @@ const styles = StyleSheet.create({
       color:colors.secondary,
     },
   });
-export default AllBills;
+export default OldBills;

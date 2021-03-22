@@ -4,7 +4,7 @@ import { createStackNavigator,CardStyleInterpolators,HeaderStyleInterpolators  }
 import LoginScreen from "./Login/LoginScreen";
 import PersonalInfoScreen from './Login/PersonalInfoScreen';
 import HomeScreen from "./Home/HomeScreen";
-import AllBills from "./Bills/AllBills";
+import OldBills from "./Bills/OldBills";
 import NewBill from "./Bills/NewBill";
 import ProfileScreen from "./Profile/ProfileScreen";
 
@@ -24,7 +24,7 @@ class Navigation extends Component {
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="PersonalInfoScreen" component={PersonalInfoScreen} />
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
-          <Stack.Screen name="AllBills" component={AllBills} />
+          <Stack.Screen name="OldBills" component={OldBills} />
           <Stack.Screen name="NewBill" component={NewBill} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
 
