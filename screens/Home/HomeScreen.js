@@ -52,18 +52,66 @@ const BILL_DATA = [
 class HomeScreen extends Component {
     state = {
         height: Dimensions.get("screen").height,
-        tableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE','STATUS'],
 
-        data : [],
+        data : null,
         account : "",
+
+        tableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE','STATUS'],
+        billData: [],
 
         notification: true,
         notificationModalVisible: false,
     }
 
     componentDidMount(){
-      this.getBlockChainData();
-      this.getAccountData();
+      this.getAndPrepareData();
+    }
+
+    prepareBillData = () =>{
+      let data = this.state.data;
+      let account = this.state.account;
+
+      let billData = [];
+
+      for(var i = 0; i < data.length; i++){
+        if(data[i][7] === account){
+          var status = data[i][8] ? ("Approved") : (data[i][9] ? ("Rejected") : ("Pending"))
+
+          if(status === "Pending"){
+            let temp = {};
+            temp['id'] =  (i+1).toString();
+
+            temp['tableData'] = [];
+            temp['tableData'].push([data[i][0]])
+            temp['tableData'].push([data[i][3]])
+            temp['tableData'].push([data[i][4]])
+            temp['tableData'].push([data[i][5]])
+            temp['tableData'].push([data[i][1]])
+            
+            var status = data[i][8] ? ("Approved") : (data[i][9] ? ("Rejected") : ("Pending"))
+
+            if(status === "Approved")
+            {
+              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="checkmark-circle" size={23} color="green" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"green"}}>APPROVED </Text></View>])
+            }
+            else if(status === "Rejected")
+            {
+              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon1 name="cancel" size={23} color="red" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"red"}}>REJECTED </Text></View>])
+            }
+            else if(status === "Pending")
+            {
+              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="time" size={23} color="#c9c930" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"#c9c930"}}>PENDING </Text></View>])
+            }
+
+            billData.push(temp)
+          }
+        }
+      }
+
+      //console.log(billData)
+      this.setState({
+        billData : billData
+      })
     }
 
     getAccountData = async () => {
@@ -71,13 +119,17 @@ class HomeScreen extends Component {
         const account = await AsyncStorage.getItem("account")
         this.setState({
           account : JSON.parse(account)
-        })
+        },
+          function() {
+            this.prepareBillData()
+          }
+        )
       } catch(e) {
         console.error("Cannot fetch data from storage " + e)
       }
     }
 
-    getBlockChainData = () =>{
+    getAndPrepareData = () =>{
       const config = {
         method: 'GET',
         headers: {
@@ -90,7 +142,11 @@ class HomeScreen extends Component {
       .then((res) => {
           this.setState({
             data : res
-          })
+          },
+            function() {
+              this.getAccountData()
+            }
+          )
           //console.log(res)
       })
       .catch((err) => {
@@ -177,17 +233,26 @@ class HomeScreen extends Component {
           cornerRadius={0}>
             <View>
               <ScrollView style={{padding:10}}>
-                  <Text style={{fontSize:14,color:"black",fontWeight:"bold",textAlign:"center"}}>RECENT BILLS</Text>
+                  <Text style={{fontSize:14,color:"black",fontWeight:"bold",textAlign:"center"}}>PENDING BILLS</Text>
               </ScrollView>
             </View>
           </CardView>
 
-            <FlatList
-              contentContainerStyle={styles.bottomLayout}
-              data={BILL_DATA}
-              renderItem={currentBillsItem}
-              keyExtractor={item => item.id}
-            />
+          {
+            this.state.billData == null ? (null) : (this.state.billData.length > 0 ? (
+              <FlatList
+                contentContainerStyle={styles.bottomLayout}
+                data={this.state.billData}
+                renderItem={currentBillsItem}
+                keyExtractor={item => item.id}
+              />
+            ) : (
+              <View style = {styles.infoBox}>
+                <Icon1 name="info" size={25} color="#856a00" style={{alignSelf:"center"}}/>
+                <Text style = {styles.infoText}>There is no pending bills to show</Text>
+              </View>
+            ))
+          }
 
             <NotificationModal
               isModalVisible = {this.state.notificationModalVisible}
@@ -278,6 +343,27 @@ const styles = StyleSheet.create({
       width:"100%",
       height:160,
       marginBottom:2,
+    },
+    infoBox: {
+      flex:0,
+      flexDirection:"row",
+      flexWrap:"wrap",
+      borderWidth:1,
+      borderColor: "#ffcc00",
+      padding:10,
+      margin:10,
+      marginTop:15,
+      elevation:2,
+      borderRadius:5,
+      backgroundColor: "#fff3c2",
+    },
+    infoText: {
+      fontSize:15,
+      marginLeft:12,
+      textAlign: 'justify',
+      lineHeight: 23,
+      width:"85%",
+      color: "#856a00",
     },
     pageTitle: {
       fontSize:18,
