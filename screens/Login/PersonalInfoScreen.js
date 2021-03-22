@@ -4,6 +4,7 @@ import { SafeAreaView, Dimensions, View, LogBox,
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from '@react-native-community/async-storage';
 import colors  from "../../config/colors";
 
 import HomeScreen from '../Home/HomeScreen';
@@ -18,6 +19,7 @@ class PersonalInfoScreen extends Component {
         loggedIn : false,
 
         data : [],
+        account : "",
 
         height: Dimensions.get("screen").height,
         cardImageSrc: "./res/1.jpg",
@@ -36,23 +38,45 @@ class PersonalInfoScreen extends Component {
       this.getPersonalDetailsData()
     }
 
-    getPersonalDetailsData = () =>{
+    getPersonalDetailsData = async () => {
+      try {
+        const account = await AsyncStorage.getItem("account")
+        this.setState({
+          account : JSON.parse(account)
+        },
+          function() {
+            this.getDatafromBlockchain()
+          }
+        )
+      } catch(e) {
+        console.error("Cannot fetch data from storage " + e)
+      }
+    }
+
+    getDatafromBlockchain = () => {
       const config = {
-        method: 'GET',
+        method: 'POST',
         headers: {
-              'Content-Type': 'application/json'
-          },
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          account: this.state.account,
+        })
       };
 
       fetch(`${CREDENTIALS.BASE_URL}/api/pdetails`, config)
       .then((resp) => resp.json())
       .then((res) => {
-          this.setState({
-            data : res
-          })
+        this.setState({
+          data : res
+        })
         //console.log(res)
       })
       .catch((err) => {
+          this.setState({
+            data : null
+          })
           console.log('err', err.message)
       })
     }
@@ -88,7 +112,7 @@ class PersonalInfoScreen extends Component {
 
 
     return (
-      this.state.data[4] ? (<HomeScreen navigation = {this.props.navigation} />):(
+      this.state.data[4] == false | this.state.data == null ? (
 
       <View style={{flex: 1, backgroundColor:"white"}}>
         <StatusBar backgroundColor="black" />
@@ -170,7 +194,7 @@ class PersonalInfoScreen extends Component {
             </KeyboardAwareView>
             </View>
             </View>
-      )
+      ) : (<HomeScreen navigation = {this.props.navigation} />)
     );
   }
 }

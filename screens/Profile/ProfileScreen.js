@@ -133,24 +133,28 @@ class ProfileScreen extends Component {
 
     getPersonalInfoData = () =>{
       const config = {
-        method: 'GET',
+        method: 'POST',
         headers: {
-              'Content-Type': 'application/json'
-          },
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          account: this.state.account,
+        })
       };
 
       fetch(`${CREDENTIALS.BASE_URL}/api/pdetails`, config)
       .then((resp) => resp.json())
       .then((res) => {
-          this.setState({
-            personalInfoData : res
-          },
-            function() {
-              this.preparePersonalInfoData();
-              this.getBillsData();
-            }
-          )
-          //console.log(res)
+        this.setState({
+          personalInfoData : res
+        },
+          function() {
+            this.preparePersonalInfoData();
+            this.getBillsData();
+          }
+        )
+        //console.log(res)
       })
       .catch((err) => {
           console.log('err', err.message)
