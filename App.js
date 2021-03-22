@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text } from "react-native";
+import { Text, LogBox } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -13,6 +13,11 @@ import Icon1 from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome5';
 
 const Drawer = createDrawerNavigator();
+
+//For Warnings
+LogBox.ignoreLogs(['Warning:']);
+console.reportErrorsAsExceptions = false;
+
 
 class App extends Component{
   render (){

@@ -7,6 +7,8 @@ import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
 import colors  from "../../config/colors";
 
+import ErrorField from '../../Components/ErrorField';
+
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import BiometricModal from '../../Components/BiometricModal';
@@ -14,7 +16,6 @@ import BiometricModal from '../../Components/BiometricModal';
 import HomeScreen from '../Home/HomeScreen';
 import PersonalInfoScreen from './PersonalInfoScreen';
 
-//LogBox.ignoreLogs(['Warning: ...']);
 
 class LoginScreen extends Component {
 
@@ -27,12 +28,23 @@ class LoginScreen extends Component {
           height: Dimensions.get("screen").height,
           cardImageSrc: "./res/1.jpg",
 
+          username : "",
+          password : "",
+
           passVisible : false,
 
           biometryType : "",
           fingerprintNotEnabled: false,
           errorMessageLegacy: "",
-          biometricLegacy : ""
+          biometricLegacy : "",
+
+          //for errors
+          usernameModiflied : false,
+          passwordModified : false,
+          usernameError : false,
+          usernameErrorText : "Required",
+          passwordError : false,
+          passwordErrorText : "Required",
       }
       this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
@@ -70,18 +82,62 @@ class LoginScreen extends Component {
       .catch(error => error.name == "FingerprintScannerNotEnrolled" ? (this.setState({biometryType : "Biometrics"})): (null));
     }
 
+    usernameChange = (name) => {
+      this.setState({
+        usernameModiflied : true,
+        username : name,
+        usernameError : name === "" | null ? (true) : (false),
+        usernameErrorText : "Required",
+      })
+    }
+
+    passwordChange = (pass) => {
+      this.setState({
+        passwordModified : true,
+        password : pass,
+        passwordError : pass === "" | null ? (true) : (false),
+        passwordErrorText : "Required",
+      })
+    }
 
   render() {
 
     const loginClick = () =>{
-      authenticate()
+      if(this.state.usernameModiflied == true && this.state.passwordModified == true && this.state.usernameError == false && this.state.passwordError == false){
+        if(checkAddressValidity(this.state.username))
+        {
+          authenticate()
+        }
+        else{
+          this.setState({
+            usernameError : true,
+            usernameErrorText : "Invalid address"
+          })
+        }
+      }
+      else{
+        if(this.state.usernameModiflied == false){
+          this.setState({
+            usernameError : true,
+          })
+        }
+        if(this.state.passwordModified == false){
+          this.setState({
+            passwordError : true,
+          })
+        }
+      }
+    }
+
+    const checkAddressValidity = (address) => {
+      return (/^(0x){1}[0-9a-fA-F]{40}$/i.test(address));
     }
 
     const authenticate = () =>{
       FingerprintScanner
       .authenticate({ title: 'Biometric Authentication',onAttempt: handleAuthenticationAttemptedLegacy })
       .then(() => {
-        console.log("Success")
+        //console.log("Success")
         FingerprintScanner.release();
         bioMetricAuthenticated()
         //this.props.handlePopupDismissedLegacy();
@@ -106,10 +162,10 @@ class LoginScreen extends Component {
     };
 
     
-    const bioMetricAuthenticated = () =>{
-      this.setState({
-        isModalVisible : false
-      },
+    const bioMetricAuthenticated = async () =>{
+    this.setState({
+      isModalVisible : false
+    },
       this.state.infoAdded ? (
         this.props.navigation.reset(
         {
@@ -123,7 +179,7 @@ class LoginScreen extends Component {
           routes: [{ name: 'PersonalInfoScreen' }],
         })
       )
-      );
+    )
     }
 
     const setPassVisibility = () =>{
@@ -157,7 +213,7 @@ class LoginScreen extends Component {
         <View style={{flex:1}}>
         <KeyboardAwareView animated={true}>
         <View style={{flex: 1}}>
-        <ScrollView style={{flex: 1}}>
+        <ScrollView style={{flex: 1}} ref={ref => {this.scrollView = ref}} onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}>
 
         {
         <Image style={styles.cardImage} source={require('./res/login.png')} />
@@ -165,25 +221,30 @@ class LoginScreen extends Component {
 
         <Text style={styles.pageTitle}>LOG IN</Text>
 
-            <View style={styles.textFieldStyle}>
-              <Icon1 name="user" size={20} color="#858585" style={{paddingTop:11,paddingLeft:3,paddingRight:8}}/>
+            <View style={[styles.textFieldStyle,{marginBottom : this.state.usernameError == true ? (4) : (20), borderColor : this.state.usernameError == true ? ("red") : ("#e3e3e3"),backgroundColor: this.state.usernameError == true ? ("#fff7fa") : ("#f5f5f5")}]}>
+              <Icon1 name="user" size={20} color={this.state.usernameError == true ? ("red") : ("#858585")} style={{paddingTop:11,paddingLeft:3,paddingRight:8}}/>
               <TextInput style = {{width:"95%",fontWeight:"normal"}}
+                value={this.state.username}
                 underlineColorAndroid = "transparent"
                 placeholder = "Username"
-                placeholderTextColor = "#858585"
+                placeholderTextColor = {this.state.usernameError == true ? ("red") : ("#858585")}
                 autoCapitalize = "none"
-                onChangeText = {null}/>
+                selectTextOnFocus={true}
+                onChangeText = {this.usernameChange}/>
             </View>
+            <ErrorField errorMessage = {this.state.usernameErrorText} isVisible = {this.state.usernameError} />
 
-            <View style={styles.textFieldStyle}>
-              <Icon name="ios-lock-closed" size={21} color="#858585" style={{paddingTop:9,paddingLeft:2,paddingRight:3}}/>
+            <View style={[styles.textFieldStyle,{marginBottom : this.state.passwordError == true ? (4) : (20), borderColor : this.state.passwordError == true ? ("red") : ("#e3e3e3"),backgroundColor: this.state.passwordError == true ? ("#fff7fa") : ("#f5f5f5")}]}>
+              <Icon name="ios-lock-closed" size={21} color={this.state.passwordError == true ? ("red") : ("#858585")} style={{paddingTop:9,paddingLeft:2,paddingRight:3}}/>
               <TextInput style={{width:"85%",fontWeight:"normal"}}
+                value={this.state.password}
                 secureTextEntry={!this.state.passVisible}
                 underlineColorAndroid = "transparent"
                 placeholder = "Password"
-                placeholderTextColor = "#858585"
+                placeholderTextColor = {this.state.passwordError == true ? ("red") : ("#858585")}
                 autoCapitalize = "none"
-                onChangeText = {null}/>
+                selectTextOnFocus={true}
+                onChangeText = {this.passwordChange}/>
               <TouchableOpacity activeOpacity={.7} onPress={setPassVisibility}>
                 {this.state.passVisible ? (
                   <Icon name="eye-off-sharp" size={22} color="#a3a3a3" style={{paddingTop:10,paddingLeft:3}}/>
@@ -192,6 +253,7 @@ class LoginScreen extends Component {
                 )}
                 </TouchableOpacity>
             </View>
+            <ErrorField errorMessage = {this.state.passwordErrorText} isVisible = {this.state.passwordError} />
           
                 </ScrollView>
               </View>
@@ -296,7 +358,6 @@ const styles = StyleSheet.create({
       flexDirection:"row",
       width:"95%",
       alignSelf:"center",
-      marginBottom:20,
       height: 45,
       borderColor: '#e3e3e3',
       backgroundColor:"#f5f5f5",
@@ -304,7 +365,7 @@ const styles = StyleSheet.create({
       borderRadius:3,
       paddingLeft:6,
       paddingRight:10,
-      color: 'black'
+      color: 'black',
     },
     submitButton: {
       width:"95%",

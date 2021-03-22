@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { SafeAreaView, Dimensions, View, LogBox,
-  Text, TouchableOpacity, StyleSheet, StatusBar, TextInput,  Image  } from "react-native";
+  Text, TouchableOpacity, StyleSheet, StatusBar, TextInput  } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
 import colors  from "../../config/colors";
 
 import HomeScreen from '../Home/HomeScreen';
+
+
 
 LogBox.ignoreLogs(['Warning: ...']);
 

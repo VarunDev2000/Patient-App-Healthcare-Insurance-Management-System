@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { SafeAreaView, Dimensions, View, LogBox,
+import { SafeAreaView, Dimensions, View,
   Text, TouchableOpacity, StyleSheet, StatusBar, FlatList,  Image, RefreshControl  } from "react-native";
 import CardView from 'react-native-cardview';
 import { ScrollView } from "react-native-gesture-handler";
@@ -12,7 +12,8 @@ import NotificationModal from '../../Components/NotificationModal';
 
 import colors  from "../../config/colors";
 
-LogBox.ignoreLogs(['Warning: ...']);
+import CREDENTIALS from '../../utils/credentials';
+
 
 
 const BILL_BUTTON_DATA = [
@@ -52,8 +53,36 @@ class HomeScreen extends Component {
         height: Dimensions.get("screen").height,
         tableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE','STATUS'],
 
+        
+        data : [],
+
         notification: true,
         notificationModalVisible: false,
+    }
+
+    componentDidMount(){
+      this.getBlockChainData()
+    }
+
+    getBlockChainData = () =>{
+      const config = {
+        method: 'GET',
+        headers: {
+              'Content-Type': 'application/json'
+          },
+      };
+
+      fetch(`${CREDENTIALS.BASE_URL}/api/all_data`, config)
+      .then((resp) => resp.json())
+      .then((res) => {
+          this.setState({
+            data : res
+          })
+          console.log(res)
+      })
+      .catch((err) => {
+          console.log('err', err.message)
+      })
     }
 
   render() {
