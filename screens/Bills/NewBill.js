@@ -138,7 +138,7 @@ class NewBill extends Component {
                 activeOpacity={.7}
                 style = {styles.cancelButton}
                 onPress = {
-                    () => this.props.navigation.navigate('HomeScreen')
+                    () => this.props.navigation.goBack()
                 }>
                 <Text style = {styles.cancelButtonText}> CANCEL </Text>
               </TouchableOpacity>

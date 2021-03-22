@@ -3,6 +3,7 @@ import { SafeAreaView, Dimensions, View,
   Text, TouchableOpacity, StyleSheet, StatusBar, FlatList,  Image, RefreshControl  } from "react-native";
 import CardView from 'react-native-cardview';
 import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/Octicons';
@@ -53,15 +54,27 @@ class HomeScreen extends Component {
         height: Dimensions.get("screen").height,
         tableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE','STATUS'],
 
-        
         data : [],
+        account : "",
 
         notification: true,
         notificationModalVisible: false,
     }
 
     componentDidMount(){
-      this.getBlockChainData()
+      this.getBlockChainData();
+      this.getAccountData();
+    }
+
+    getAccountData = async () => {
+      try {
+        const account = await AsyncStorage.getItem("account")
+        this.setState({
+          account : JSON.parse(account)
+        })
+      } catch(e) {
+        console.error("Cannot fetch data from storage " + e)
+      }
     }
 
     getBlockChainData = () =>{
@@ -78,7 +91,7 @@ class HomeScreen extends Component {
           this.setState({
             data : res
           })
-          console.log(res)
+          //console.log(res)
       })
       .catch((err) => {
           console.log('err', err.message)
@@ -93,7 +106,7 @@ class HomeScreen extends Component {
       cardElevation={3}
       cardMaxElevation={3}
       cornerRadius={5}>
-        <TouchableOpacity activeOpacity={.9} onPress={() => this.props.navigation.navigate(item.nav)}>
+        <TouchableOpacity activeOpacity={.9} onPress={() => this.props.navigation.navigate(item.nav, {data: this.state.data,account: this.state.account})}>
           <Image style={styles.cardImage} source={item.img} />
           <Text style={styles.cardHeading}>
             {item.card_heading}

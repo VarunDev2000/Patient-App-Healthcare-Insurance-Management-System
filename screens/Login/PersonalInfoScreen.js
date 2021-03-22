@@ -4,7 +4,6 @@ import { SafeAreaView, Dimensions, View, LogBox,
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareView } from 'react-native-keyboard-aware-view'
 import { ScrollView } from "react-native-gesture-handler";
-import AsyncStorage from '@react-native-community/async-storage';
 import colors  from "../../config/colors";
 
 import HomeScreen from '../Home/HomeScreen';
@@ -51,7 +50,7 @@ class PersonalInfoScreen extends Component {
           this.setState({
             data : res
           })
-          console.log(res)
+        //console.log(res)
       })
       .catch((err) => {
           console.log('err', err.message)
