@@ -3,6 +3,7 @@ import { SafeAreaView, Dimensions, View, LogBox,
   Text, TouchableOpacity, StyleSheet, StatusBar, FlatList,  Image  } from "react-native";
 import CardView from 'react-native-cardview';
 import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from '@react-native-community/async-storage';
 import IndexTable from '../../Components/IndexTable';
 import BillTable from '../../Components/BillTable';
 
@@ -28,28 +29,6 @@ const DATA = [
   },
 ];
 
-const BILL_DATA = [
-  {
-    id: '1',
-    tableData: [['52'],['Brain scanning'],['12-10-2020'],['Apollo Hospital'],['Rs.4000']]
-  },
-  {
-    id: '2',
-    tableData: [['23'],['Ultrasound'],['06-05-2020'],['Apollo Hospital'],['Rs.1000']]
-  },
-  {
-    id: '3',
-    tableData: [['91'],['Skin test'],['06-01-2021'],['K.S.P Skin Hospital'],['Rs.8000']]
-  },
-  {
-    id: '4',
-    tableData: [['142'],['Skin test'],['21-01-2021'],['K.S.P Skin Hospital'],['Rs.2000']]
-  },
-  {
-    id: '5',
-    tableData: [['305'],['Brain scanning'],['10-2-2021'],['Apollo Hospital'],['Rs.2000']]
-  },
-];
 
   
 class ProfileScreen extends Component {
@@ -59,13 +38,22 @@ class ProfileScreen extends Component {
         myBillsSelected : false,
         profilePic : require('./res/profilepic.jpg'),
 
-        tableTitle: ['Name', 'DOB', 'Mobile No', 'Blood Grp'],
-        tableData: [['Patient 1'],['06-10-1980'],['9876543210'],['O +ve']],
+        account : "",
 
+        personalInfoData: [],
+        tableTitle: ['Name', 'DOB', 'Mobile No', 'Blood Grp'],
+        tableData: [],
+
+        billsData: [],
         billTableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE'],
+        billTableData: [],
 
         notification: true,
         notificationModalVisible: false,
+    }
+
+    componentDidMount(){
+      this.getAndPrepareData();
     }
 
     setSelected(id){
@@ -82,6 +70,116 @@ class ProfileScreen extends Component {
                 myBillsSelected : true
             })
         }
+    }
+
+    preparePersonalInfoData = () =>{
+      let data = this.state.personalInfoData;
+
+      let pInfoData = [];
+
+      pInfoData.push([data[1]])
+      pInfoData.push([data[2]])
+      pInfoData.push([data[0]])
+      pInfoData.push([data[3]])
+
+      //console.log(pInfoData)
+      this.setState({
+        tableData : pInfoData
+      })
+    }
+
+    prepareBillsData = () =>{
+      let data = this.state.billsData.reverse();
+      let account = this.state.account;
+
+      let finalData = [];
+
+      for(var i = 0; i < data.length; i++){
+        if(data[i][7] === account){
+            let temp = {};
+            temp['id'] =  (i+1).toString();
+
+            temp['tableData'] = [];
+            temp['tableData'].push([data[i][0]])
+            temp['tableData'].push([data[i][3]])
+            temp['tableData'].push([data[i][4]])
+            temp['tableData'].push([data[i][5]])
+            temp['tableData'].push([data[i][1]])
+
+            finalData.push(temp)
+        }
+      }
+
+      //console.log(billData)
+      this.setState({
+        billTableData : finalData
+      })
+    }
+
+    getAndPrepareData = async () => {
+      try {
+        const account = await AsyncStorage.getItem("account")
+        this.setState({
+          account : JSON.parse(account)
+        },
+          function() {
+            this.getPersonalInfoData()
+          }
+        )
+      } catch(e) {
+        console.error("Cannot fetch data from storage " + e)
+      }
+    }
+
+    getPersonalInfoData = () =>{
+      const config = {
+        method: 'GET',
+        headers: {
+              'Content-Type': 'application/json'
+          },
+      };
+
+      fetch(`${CREDENTIALS.BASE_URL}/api/pdetails`, config)
+      .then((resp) => resp.json())
+      .then((res) => {
+          this.setState({
+            personalInfoData : res
+          },
+            function() {
+              this.preparePersonalInfoData();
+              this.getBillsData();
+            }
+          )
+          //console.log(res)
+      })
+      .catch((err) => {
+          console.log('err', err.message)
+      })
+    }
+
+    getBillsData = () =>{
+      const config = {
+        method: 'GET',
+        headers: {
+              'Content-Type': 'application/json'
+          },
+      };
+
+      fetch(`${CREDENTIALS.BASE_URL}/api/all_data`, config)
+      .then((resp) => resp.json())
+      .then((res) => {
+          this.setState({
+            billsData : res
+          },
+            function() {
+              this.prepareBillsData();
+            }
+          )
+          //console.log(res)
+      })
+      .catch((err) => {
+          console.log('err', err.message)
+      })
     }
 
 
@@ -158,12 +256,18 @@ class ProfileScreen extends Component {
                   cornerRadius={3}>
                     <View>
                       <ScrollView style={{padding:10}}>
-                        <View>
-                            <Image style={styles.cardImage} source={this.state.profilePic}/>
-                            <IndexTable
-                              tableTitle = {this.state.tableTitle}
-                              tableData = {this.state.tableData}
-                            />
+
+                            {
+                            this.state.tableData.length > 0 ? (
+                              <View>
+                                <Image style={styles.cardImage} source={this.state.profilePic}/>
+                                <IndexTable
+                                  tableTitle = {this.state.tableTitle}
+                                  tableData = {this.state.tableData}
+                                />
+                              </View>
+                              ) : (null)
+                            }
                             {
                             /*
                             <TouchableOpacity activeOpacity={.6} onPress={logOut}>
@@ -171,7 +275,6 @@ class ProfileScreen extends Component {
                             </TouchableOpacity>
                             */ 
                             }
-                        </View>
                       </ScrollView>
                     </View>
                   </CardView>
@@ -184,7 +287,7 @@ class ProfileScreen extends Component {
                     <View>
                         <FlatList
                           contentContainerStyle={styles.billsListLayout}
-                          data={BILL_DATA}
+                          data={this.state.billTableData}
                           renderItem={allBillsItem}
                           keyExtractor={item => item.id}
                         />

@@ -38,7 +38,7 @@ class HomeScreen extends Component {
     state = {
         height: Dimensions.get("screen").height,
 
-        data : null,
+        data : [],
         account : "",
 
         tableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE','STATUS'],
@@ -53,7 +53,7 @@ class HomeScreen extends Component {
     }
 
     prepareBillData = () =>{
-      let data = this.state.data;
+      let data = this.state.data.reverse();
       let account = this.state.account;
 
       let billData = [];
@@ -72,21 +72,7 @@ class HomeScreen extends Component {
             temp['tableData'].push([data[i][4]])
             temp['tableData'].push([data[i][5]])
             temp['tableData'].push([data[i][1]])
-            
-            var status = data[i][8] ? ("Approved") : (data[i][9] ? ("Rejected") : ("Pending"))
-
-            if(status === "Approved")
-            {
-              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="checkmark-circle" size={23} color="green" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"green"}}>APPROVED </Text></View>])
-            }
-            else if(status === "Rejected")
-            {
-              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon1 name="cancel" size={23} color="red" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"red"}}>REJECTED </Text></View>])
-            }
-            else if(status === "Pending")
-            {
-              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="time" size={23} color="#c9c930" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"#c9c930"}}>PENDING </Text></View>])
-            }
+            temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="time" size={23} color="#c9c930" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"#c9c930"}}>PENDING </Text></View>])
 
             billData.push(temp)
           }
@@ -224,7 +210,7 @@ class HomeScreen extends Component {
           </CardView>
 
           {
-            this.state.billData == null ? (null) : (this.state.billData.length > 0 ? (
+            this.state.billData.length > 0 ? (
               <FlatList
                 contentContainerStyle={styles.bottomLayout}
                 data={this.state.billData}
@@ -236,7 +222,7 @@ class HomeScreen extends Component {
                 <Icon1 name="info" size={25} color="#856a00" style={{alignSelf:"center"}}/>
                 <Text style = {styles.infoText}>There is no pending bills to show</Text>
               </View>
-            ))
+            )
           }
 
             <NotificationModal
