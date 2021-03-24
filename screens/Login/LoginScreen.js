@@ -15,7 +15,6 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 import BiometricModal from '../../Components/BiometricModal';
 
 import HomeScreen from '../Home/HomeScreen';
-import PersonalInfoScreen from './PersonalInfoScreen';
 
 
 class LoginScreen extends Component {
@@ -23,7 +22,6 @@ class LoginScreen extends Component {
     constructor(props) {
       super(props)
       this.state = {
-          infoAdded : false,
           loggedIn : false,
 
           height: Dimensions.get("screen").height,
@@ -47,7 +45,7 @@ class LoginScreen extends Component {
           passwordError : false,
           passwordErrorText : "Required",
 
-          token:""
+          accountExist: true,
       }
       this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
@@ -160,6 +158,67 @@ class LoginScreen extends Component {
     }
 
     const authenticate = () =>{
+      authenticateByPData()
+    }
+
+    const authenticateByPData = () =>{
+      const config = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          account: this.state.username,
+        })
+      };
+
+      fetch(`${CREDENTIALS.BASE_URL}/api/pdetails`, config)
+      .then((resp) => resp.json())
+      .then((res) => {
+        //console.log(res)
+        this.setState({
+          accountExist : true
+        },biometricAuthenticate())
+      })
+      .catch((err) => {
+        authenticateByBillData()
+        console.log('err', err.message)
+      })
+    }
+
+    const authenticateByBillData = () =>{
+      const config = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          account: this.state.username,
+        })
+      };
+
+      fetch(`${CREDENTIALS.BASE_URL}/api/all_data`, config)
+      .then((resp) => resp.json())
+      .then((res) => {
+        //console.log(res)
+        this.setState({
+          accountExist : true
+        },biometricAuthenticate())
+      })
+      .catch((err) => {
+        this.setState({
+          accountExist : false
+        })
+        setTimeout(() => {this.setState({accountExist: true})}, 4000)
+        console.log("Account do not exist")
+        console.log('err', err.message)
+      })
+    }
+
+
+    const biometricAuthenticate = () =>{
       FingerprintScanner
       .authenticate({ title: 'Biometric Authentication',onAttempt: handleAuthenticationAttemptedLegacy })
       .then(() => {
@@ -169,7 +228,7 @@ class LoginScreen extends Component {
         //this.props.handlePopupDismissedLegacy();
       })
       .catch((error) => {
-        console.error(error)
+        //console.error(error)
 
         if(error.name == "FingerprintScannerNotEnrolled"){
           this.setState({
@@ -202,20 +261,11 @@ class LoginScreen extends Component {
     this.setState({
       isModalVisible : false
     },
-      this.state.infoAdded ? (
-        this.props.navigation.reset(
+      this.props.navigation.reset(
         {
           index: 0,
           routes: [{ name: 'HomeScreen' }],
-        })
-      ) : (
-        this.props.navigation.reset(
-        {
-          index: 0,
-          routes: [{ name: 'PersonalInfoScreen' }],
-        })
-      )
-    )
+        }))
     }
 
     const setPassVisibility = () =>{
@@ -232,13 +282,7 @@ class LoginScreen extends Component {
 
     if(this.state.loggedIn)
     {
-      if(this.state.infoAdded)
-      {
-        return <HomeScreen navigation={this.props.navigation}/>
-      }
-      else{
-        return <PersonalInfoScreen navigation={this.props.navigation}/>
-      }
+      return <HomeScreen navigation={this.props.navigation}/>
     }
     else{
     return (
@@ -290,6 +334,8 @@ class LoginScreen extends Component {
                 </TouchableOpacity>
             </View>
             <ErrorField errorMessage = {this.state.passwordErrorText} isVisible = {this.state.passwordError} />
+
+            <ErrorField errorMessage = "Account not registered" isVisible = {!this.state.accountExist} />
           
                 </ScrollView>
               </View>

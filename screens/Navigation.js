@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { createStackNavigator,CardStyleInterpolators,HeaderStyleInterpolators  } from "@react-navigation/stack";
 
 import LoginScreen from "./Login/LoginScreen";
-import PersonalInfoScreen from './Login/PersonalInfoScreen';
 import HomeScreen from "./Home/HomeScreen";
 import OldBills from "./Bills/OldBills";
 import NewBill from "./Bills/NewBill";
@@ -23,7 +22,6 @@ class Navigation extends Component {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}>
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
-          <Stack.Screen name="PersonalInfoScreen" component={PersonalInfoScreen} />
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="OldBills" component={OldBills} />
           <Stack.Screen name="NewBill" component={NewBill} />
