@@ -17,6 +17,143 @@ import Icon from 'react-native-vector-icons/Octicons';
 
 class DrawerContent extends Component {
 
+    state = {
+      account : "",
+      pdata : [],
+      data : [],
+
+      patient_name : "-",
+      number : "-",
+      total_bills : 0,
+      accepted : 0,
+      rejected : 0,
+      waiting : 0
+    }
+
+    componentDidMount(){
+      this.getAndPrepareData();
+    }
+
+    prepareBillData = () =>{
+      let data = this.state.data.reverse();
+      let account = this.state.account;
+      let waiting = 0
+      let accepted = 0
+      let rejected = 0
+
+      this.setState({
+        total_bills : data.length
+      })
+
+      for(var i = 0; i < data.length; i++){
+        if(data[i][7] === account){
+
+          if(data[i][8] == 0){
+            waiting = waiting + 1;
+          }
+          else if(data[i][8] == 1){
+            accepted = accepted + 1; 
+          }
+          else if(data[i][8] == 2){
+            rejected = rejected + 1; 
+          }
+      }
+
+      this.setState({
+        waiting : waiting,
+        accepted : accepted,
+        rejected : rejected,
+      }) 
+    }
+    }
+
+    preparePData = () =>{
+      let data = this.state.pdata;
+
+      this.setState({
+        patient_name : data[1],
+        number : data[0]
+      })
+    }
+
+    getAndPrepareData = async () => {
+      try {
+        const account = await AsyncStorage.getItem("account")
+        this.setState({
+          account : JSON.parse(account)
+        },
+          function() {
+            this.getPData()
+          }
+        )
+      } catch(e) {
+        this.setState({
+          error : err
+        })
+        console.error("Cannot fetch data from storage " + e)
+      }
+    }
+
+    getPData = () =>{
+      const config = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          account: this.state.account,
+        })
+      };
+
+      fetch(`${CREDENTIALS.BASE_URL}/api/pdetails`, config)
+      .then((resp) => resp.json())
+      .then((res) => {
+        this.setState({
+          pdata : res
+        },
+          function() {
+            this.getBillData()
+            this.preparePData()
+          }
+        )
+        //console.log(res)
+      })
+      .catch((err) => {
+        console.log('err', err.message)
+      })
+    }
+
+    getBillData = () =>{
+      const config = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          account: this.state.account,
+        })
+      };
+
+      fetch(`${CREDENTIALS.BASE_URL}/api/account_bill_data`, config)
+      .then((resp) => resp.json())
+      .then((res) => {
+        this.setState({
+          data : res
+        },
+          function() {
+            this.prepareBillData()
+          }
+        )
+        //console.log(res)
+      })
+      .catch((err) => {
+        console.log('err', err.message)
+      })
+    }
+
+
     logOutModalPopup = () => {
       Alert.alert("Log Out", "Are you sure you want to log out?", [
         {
@@ -35,8 +172,9 @@ class DrawerContent extends Component {
       //Store in local storage
       try {
         //const jsonValue1 = JSON.stringify("")
-        const jsonValue2 = JSON.stringify(false)
         //await AsyncStorage.setItem("account", jsonValue1)
+
+        const jsonValue2 = JSON.stringify(false)
         await AsyncStorage.setItem("loggedIn", jsonValue2)
 
       } catch (e) {
@@ -60,30 +198,30 @@ class DrawerContent extends Component {
                                 style={{marginTop:0,backgroundColor:"white"}}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Title style={styles.title}>Patient 1</Title>
-                                <Caption style={styles.caption}>(+91) 9876543210</Caption>
+                                <Title style={styles.title}>{this.state.patient_name}</Title>
+                                <Caption style={styles.caption}>{"(+91)" + this.state.number}</Caption>
                             </View>
                         </View>
 
 
                         <View style={[styles.section,{marginTop:20}]}>
                             <Caption style={[styles.caption,{fontWeight:"normal"}]}>Total bills applied : </Caption>
-                            <Paragraph style={[styles.paragraph, styles.caption]}>5</Paragraph>
+                            <Paragraph style={[styles.paragraph, styles.caption]}>{this.state.total_bills}</Paragraph>
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.section}>
                                 <Caption style={[styles.caption,{color:"green",fontWeight:"bold"}]}>Accepted : </Caption>
-                                <Paragraph style={[styles.paragraph, styles.caption,{fontWeight:"bold"}]}>2</Paragraph>
+                                <Paragraph style={[styles.paragraph, styles.caption,{fontWeight:"bold"}]}>{this.state.accepted}</Paragraph>
                             </View>
                             <View style={styles.section}>
                                 <Caption style={[styles.caption,{color:"#c9c930",fontWeight:"bold"}]}>Waiting : </Caption>
-                                <Paragraph style={[styles.paragraph, styles.caption]}>1</Paragraph>
+                                <Paragraph style={[styles.paragraph, styles.caption]}>{this.state.waiting}</Paragraph>
                             </View>
                         </View>
                         <View style={[styles.section,{marginBottom:0}]}>
                             <Caption style={[styles.caption,{color:"red",fontWeight:"bold"}]}>Rejected : </Caption>
-                            <Paragraph style={[styles.paragraph, styles.caption]}>2</Paragraph>
+                            <Paragraph style={[styles.paragraph, styles.caption]}>{this.state.rejected}</Paragraph>
                         </View>
                     </View>
                     

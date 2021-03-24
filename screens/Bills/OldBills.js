@@ -22,7 +22,7 @@ class OldBills extends Component {
 
     componentDidMount(){
       //console.log(this.props.route.params.data);
-      this.prepareBillData(this.props.route.params.data.reverse(), this.props.route.params.account)
+      this.prepareBillData(this.props.route.params.data, this.props.route.params.account)
     }
 
     prepareBillData = (data, account) =>{

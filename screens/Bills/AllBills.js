@@ -22,11 +22,12 @@ class AllBills extends Component {
 
     componentDidMount(){
       //console.log(this.props.route.params.data);
-      this.prepareBillData(this.props.route.params.data.reverse(), this.props.route.params.account)
+      this.prepareBillData(this.props.route.params.data, this.props.route.params.account)
     }
 
     prepareBillData = (data, account) =>{
       let billData = [];
+      var data = data;
 
       for(var i = 0; i < data.length; i++){
         if(data[i][7] === account)
