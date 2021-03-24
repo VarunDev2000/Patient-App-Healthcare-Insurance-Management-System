@@ -30,7 +30,7 @@ class NotificationModal extends Component {
         <Icon name="rupee" size={18} color="black" style={{marginLeft:"10%",marginRight:5,marginTop:1}}/>
         <Text numberOfLines={1} style={{width:"20%"}}>{item.price}</Text>
       </View>
-      <View style={{flex:0.4,width:"30%",flexDirection:"row",borderTopRightRadius:5,borderBottomRightRadius:5,padding:25,justifyContent:"center",alignItems:"center",color:"white",backgroundColor: item.status == 1 ? ("green") : ("red")}}>
+      <View style={{flex:0.4,width:"30%",flexDirection:"row",borderTopRightRadius:5,borderBottomRightRadius:5,padding:25,justifyContent:"center",alignItems:"center",color:"white",backgroundColor: item.status == 1 ? ("green") : ("#d93030")}}>
         {
           item.status == 1 ? (
             <Icon3 name="checkmark-circle" size={23} color="white" style={{marginRight:5}}/>

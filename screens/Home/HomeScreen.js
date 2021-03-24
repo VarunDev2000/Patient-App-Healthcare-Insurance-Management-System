@@ -7,9 +7,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/Octicons';
+import Icon3 from 'react-native-vector-icons/FontAwesome';
 import BillTable from '../../Components/BillTable';
 
 import NotificationModal from '../../Components/NotificationModal';
+import NotificationInfoField from '../../Components/NotificationInfoField';
 
 import colors  from "../../config/colors";
 
@@ -50,6 +52,8 @@ class HomeScreen extends Component {
 
         notification: false,
         notificationModalVisible: false,
+
+        showNotifier : false,
 
         error : "",
     }
@@ -119,10 +123,14 @@ class HomeScreen extends Component {
       //console.log(notificationData)
       this.setState({
         notificationData : notificationData,
-        notification : notificationData.length > 0 ? (true) : (false),
         loadervisible: false,
-      })
-    }
+      },
+      function(){
+      setTimeout(() => {this.setState({showNotifier: true,notification : notificationData.length > 0 ? (true) : (false),})}, 500)
+      //setTimeout(() => {this.setState({showNotifier: false})},4000)
+      }
+    )
+  }
 
     getAccountData = async () => {
       try {
@@ -144,6 +152,14 @@ class HomeScreen extends Component {
     }
 
     getAndPrepareData = () =>{
+      //set to initial state
+      this.setState({
+        loadervisible : true,
+        notification: false,
+        notificationModalVisible: false,
+        showNotifier : false,
+      })
+
       const config = {
         method: 'GET',
         headers: {
@@ -168,6 +184,12 @@ class HomeScreen extends Component {
           error : err
         })
         console.log('err', err.message)
+      })
+    }
+
+    closeNotificationInfoField = () => {
+      this.setState({
+        showNotifier : false
       })
     }
 
@@ -204,7 +226,8 @@ class HomeScreen extends Component {
     const notificationClick = () =>{
       this.setState({
         notificationModalVisible:true,
-        notification:false
+        notification:false,
+        showNotifier:false,
       })
     }
     const closeModal = () =>{
@@ -234,15 +257,24 @@ class HomeScreen extends Component {
                 <Icon name="menu-sharp" size={28} color={colors.topBarIconColor} style={{marginLeft:18,paddingRight:10}}/>
               </TouchableOpacity>
               <Text style={styles.pageTitle}> HOME </Text>
-              <TouchableOpacity activeOpacity={.8} onPress={() => notificationClick()}>
-                <Icon name="notifications" size={24} color={colors.topBarIconColor} style={{marginRight:18,paddingLeft:10}}/>
-                {
-                  this.state.notification ? (
-                    <Icon2 name="primitive-dot" size={20} color="red" style={{paddingLeft:22.3,paddingBottom:20,position:"absolute"}}/>
-                  ) : (null)
-                }
-              </TouchableOpacity>
+              <View style={{flexDirection:"row"}}>
+                <TouchableOpacity activeOpacity={.6} onPress={() => this.getAndPrepareData()}>
+                  <Icon3 name="refresh" size={22} color={colors.topBarIconColor} style={{marginRight:20,marginTop:1}}/>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={.8} onPress={() => notificationClick()}>
+                  <Icon name="notifications" size={24} color={colors.topBarIconColor} style={{marginRight:18,paddingLeft:10}}/>
+                  {
+                    this.state.notification ? (
+                      <Icon2 name="primitive-dot" size={20} color="red" style={{paddingLeft:22.3,paddingBottom:20,position:"absolute"}}/>
+                    ) : (null)
+                  }
+                </TouchableOpacity>
+              </View>
             </View>
+
+            {
+              this.state.showNotifier ? (<NotificationInfoField notificationCount={this.state.notificationData.length} closeNotificationInfoField = {this.closeNotificationInfoField} />) : (null)
+            }
 
             {this.state.loadervisible == true ? (<Loader />) : (
             <View>
@@ -404,6 +436,7 @@ const styles = StyleSheet.create({
       fontSize:18,
       fontWeight:"bold",
       color:colors.secondary,
+      marginLeft:25,
     },
   });
 export default HomeScreen;
