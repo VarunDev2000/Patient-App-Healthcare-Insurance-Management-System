@@ -6,12 +6,16 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import BillTable from '../../Components/BillTable';
 
+import Loader from "../../Components/Loader";
+
 import colors  from "../../config/colors";
 
 
 class AllBills extends Component {
     state = {
         height: Dimensions.get("screen").height,
+
+        loadervisible : true,
 
         data: [],
         account: "",
@@ -62,7 +66,8 @@ class AllBills extends Component {
 
       //console.log(billData)
       this.setState({
-        billData : billData
+        billData : billData,
+        loadervisible : false
       })
     }
 
@@ -94,13 +99,15 @@ class AllBills extends Component {
             <Icon name="notifications" size={25} color={colors.primary} style={{marginRight:18}}/>
           </TouchableOpacity>
         </View>
-
+        {this.state.loadervisible == true ? (<Loader />) : (
           <FlatList
             contentContainerStyle={styles.bottomLayout}
             data={this.state.billData}
             renderItem={allBillsItem}
             keyExtractor={item => item.id}
           />
+        )
+        }
         </View>
 
         </SafeAreaView>

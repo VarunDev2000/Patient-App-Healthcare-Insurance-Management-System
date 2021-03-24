@@ -4,7 +4,7 @@ import {
   View,
   StyleSheet,
   Text,
-  Image,
+  StatusBar,
   TouchableOpacity,
 } from "react-native";
 
@@ -47,8 +47,8 @@ class NotificationModal extends Component {
       animationOutTiming={300}
       backdropTransitionOutTiming={0}
       backdropTransitionOutTiming={0}
-      backdropOpacity={0.7}
-      backdropColor="black"
+      backdropOpacity={0.2}
+      backdropColor={colors.primary}
       scrollHorizontal={true}
       onBackButtonPress={() => closeModal()}
     >

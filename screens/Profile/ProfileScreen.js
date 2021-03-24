@@ -14,6 +14,8 @@ import colors  from "../../config/colors";
 
 import NotificationModal from '../../Components/NotificationModal';
 
+import Loader from "../../Components/Loader";
+
 LogBox.ignoreLogs(['Warning: ...']);
 
 const DATA = [
@@ -29,6 +31,8 @@ class ProfileScreen extends Component {
         height: Dimensions.get("screen").height,
         myBillsSelected : false,
         profilePic : require('./res/profilepic.jpg'),
+
+        loadervisible : true,
 
         account : "",
 
@@ -62,37 +66,11 @@ class ProfileScreen extends Component {
 
       //console.log(pInfoData)
       this.setState({
-        tableData : pInfoData
+        tableData : pInfoData,
+        loadervisible : false,
       })
     }
 
-    prepareBillsData = () =>{
-      let data = this.state.billsData.reverse();
-      let account = this.state.account;
-
-      let finalData = [];
-
-      for(var i = 0; i < data.length; i++){
-        if(data[i][7] === account){
-            let temp = {};
-            temp['id'] =  (i+1).toString();
-
-            temp['tableData'] = [];
-            temp['tableData'].push([data[i][0]])
-            temp['tableData'].push([data[i][3]])
-            temp['tableData'].push([data[i][4]])
-            temp['tableData'].push([data[i][5]])
-            temp['tableData'].push([data[i][1]])
-
-            finalData.push(temp)
-        }
-      }
-
-      //console.log(billData)
-      this.setState({
-        billTableData : finalData
-      })
-    }
 
     getAndPrepareData = async () => {
       try {
@@ -132,7 +110,6 @@ class ProfileScreen extends Component {
         },
           function() {
             this.preparePersonalInfoData();
-            this.getBillsData();
           }
         )
         //console.log(res)
@@ -145,35 +122,6 @@ class ProfileScreen extends Component {
       })
     }
 
-    getBillsData = () =>{
-      const config = {
-        method: 'GET',
-        headers: {
-              'Content-Type': 'application/json'
-          },
-      };
-
-      fetch(`${CREDENTIALS.BASE_URL}/api/all_data`, config)
-      .then((resp) => resp.json())
-      .then((res) => {
-          this.setState({
-            billsData : res
-          },
-            function() {
-              this.prepareBillsData();
-            }
-          )
-          //console.log(res)
-      })
-      .catch((err) => {
-        this.setState({
-          error : err
-        })
-        console.log('err', err.message)
-      })
-    }
-
-
   render() {
 
     const renderItem = ({ item }) => (
@@ -182,19 +130,6 @@ class ProfileScreen extends Component {
               {item.card_heading}
             </Text>
           </TouchableOpacity>
-      );
-
-      const allBillsItem = ({ item }) => (
-        <CardView
-        style={styles.billCard}
-        cardElevation={3}
-        cardMaxElevation={3}
-        cornerRadius={2}>
-            <BillTable
-              tableTitle = {this.state.billTableTitle}
-              tableData = {item.tableData}
-            />
-        </CardView>
       );
 
       const notificationClick = () =>{
@@ -238,6 +173,9 @@ class ProfileScreen extends Component {
           </TouchableOpacity>
         </View>
 
+        {this.state.loadervisible == true ? (<Loader />) : (
+        
+        <View>
         <View style={styles.middleLayout}>
             <FlatList
             style ={styles.flatListStyle}
@@ -285,6 +223,8 @@ class ProfileScreen extends Component {
           modelDesc = "Try setting fingerprint authentication on your device"
           opacity = {0.6}
         />
+        </View>
+        )}
 
         </SafeAreaView>
       )

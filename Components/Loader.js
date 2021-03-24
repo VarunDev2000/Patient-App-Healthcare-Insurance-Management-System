@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Image, View, StyleSheet, Text, StatusBar} from 'react-native';
+import {Image, View, StyleSheet, Modal, StatusBar,Text} from 'react-native';
 import CardView from 'react-native-cardview';
 //import AnimatedLoader from 'react-native-animated-loader';
 
@@ -9,48 +9,56 @@ class Loader extends Component {
 
   render() {
     return (
+      <Modal backdropColor='transparent'
+      transparent={true} visible={true}>
         <View style={styles.outerLayout}>
-           <StatusBar  barStyle = "dark-content" hidden = {false} backgroundColor="white" />
+          <StatusBar  barStyle = "light-content" hidden = {false} backgroundColor={colors.primary} />
           <CardView
             style={styles.card}
             cardElevation={5}
             cardMaxElevation={5}
-            cornerRadius={100}>
+            cornerRadius={5}>
               <Image style={styles.gifStyle} source={require('../res/animations/gifs/loader.gif')} />
+              <Text style={styles.loadingText}>Loading</Text>
           </CardView>
-          <Text style={styles.loadingText}>... Loading ...</Text>
         </View> 
+        </Modal>
     )
   }
 };
 
 
 const styles = StyleSheet.create({
-  card: {
-    flex:0,
-    padding: 10,
-    borderRadius: 5,
-    justifyContent:"center",
-    alignItems:"center"
-  },
   outerLayout: {
     flex: 1,
-    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom:50
+    paddingBottom:50,
+    backgroundColor:"rgba(0,0,0,0.1)"
+  },
+  card: {
+    flex:0,
+    padding: 6,
+    paddingLeft:6,
+    paddingRight:8,
+    borderRadius: 5,
+    justifyContent:"center",
+    alignItems:"center",
+    flexDirection:"column",
   },
   loadingText: {
-    fontSize:16,
+    fontSize:14,
     color: colors.primary,
-    fontWeight:"bold",
     width:"100%",
-    marginTop:10,
-    textAlign:"center"
+    textAlign:"center",
+    marginTop:2,
+    marginLeft:7,
+    marginRight:7
   },
   gifStyle: {
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
+    resizeMode: "contain"
   },
 })
 
