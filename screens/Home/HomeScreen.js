@@ -20,14 +20,14 @@ import CREDENTIALS from '../../utils/credentials';
 const BILL_BUTTON_DATA = [
   {
     id: '1',
-    card_heading: 'NEW BILL',
-    img: require('./res/newBill.png'),
-    nav: 'NewBill',
+    card_heading: 'ALL BILLS',
+    img: require('./res/allBills.jpg'),
+    nav: 'AllBills',
   },
   {
     id: '2',
     card_heading: 'OLD BILLS',
-    img: require('./res/oldBills.jpg'),
+    img: require('./res/oldBills.png'),
     nav: 'OldBills',
   },
 
@@ -62,9 +62,8 @@ class HomeScreen extends Component {
 
       for(var i = 0; i < data.length; i++){
         if(data[i][7] === account){
-          var status = data[i][8] ? ("Approved") : (data[i][9] ? ("Rejected") : ("Pending"))
 
-          if(status === "Pending"){
+          if(data[i][8] == 0){
             let temp = {};
             temp['id'] =  (i+1).toString();
 
