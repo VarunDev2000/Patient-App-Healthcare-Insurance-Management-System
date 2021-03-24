@@ -182,16 +182,11 @@ class LoginScreen extends Component {
       .then((resp) => resp.json())
       .then((res) => {
         //console.log(res)
-        this.setState({
-          loadervisible: false,
-          accountExist : true,
-        },biometricAuthenticate())
+        setTimeout(() => {this.setState({accountExist: true,loadervisible: false},biometricAuthenticate())}, 2000)
       })
       .catch((err) => {
-        this.setState({
-          accountExist : false
-        })
-        setTimeout(() => {this.setState({accountExist: true})}, 3000)
+        setTimeout(() => {this.setState({accountExist: false,loadervisible: false})}, 2000)
+        setTimeout(() => {this.setState({accountExist: true})}, 5000)
         console.log("Account do not exist")
         console.log('err', err.message)
       })
@@ -265,10 +260,6 @@ class LoginScreen extends Component {
       return <HomeScreen navigation={this.props.navigation}/>
     }
     else{
-    if(this.state.loadervisible == true){
-      return <Loader />
-    }
-    else{
       return (
 
         <View style={{flex: 1, backgroundColor:"white"}}>
@@ -330,7 +321,15 @@ class LoginScreen extends Component {
                   onPress = {
                     loginClick
                   }>
-                  <Text style = {styles.submitButtonText}> LOGIN </Text>
+                  {
+                  this.state.loadervisible ? (
+                    <View style={{flex:0,borderRadius:200,backgroundColor:"white",padding:5}}>
+                      <Image style={styles.gifStyle} source={require('../../res/animations/gifs/loader.gif')} />
+                    </View>
+                  ) : (
+                    <Text style = {styles.submitButtonText}> LOGIN </Text>
+                  )
+                  }
                 </TouchableOpacity>
 
                 {
@@ -357,7 +356,6 @@ class LoginScreen extends Component {
               </View>
               </View>
       );
-  }
   }
   }
 }
@@ -451,6 +449,11 @@ const styles = StyleSheet.create({
       color: 'white',
       fontWeight:"bold",
       textAlign:"center"
+    },
+    gifStyle: {
+      width: 25,
+      height: 25,
+      resizeMode: "contain",
     },
     pageTitle: {
       fontSize:30,
