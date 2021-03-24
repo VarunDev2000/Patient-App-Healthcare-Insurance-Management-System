@@ -199,7 +199,7 @@ class DrawerContent extends Component {
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
                                 <Title style={styles.title}>{this.state.patient_name}</Title>
-                                <Caption style={styles.caption}>{"(+91)" + this.state.number}</Caption>
+                                <Caption style={styles.caption}>{"(+91) " + this.state.number}</Caption>
                             </View>
                         </View>
 

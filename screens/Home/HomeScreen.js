@@ -193,6 +193,40 @@ class HomeScreen extends Component {
       })
     }
 
+    notificationViewed = () =>{
+      let data = this.state.notificationData;
+
+      let l = [];
+
+      for(var i = 0; i < data.length; i++){
+        l.push(data[i].id);
+      }
+      //console.log(l)
+
+      const config = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          data: l,
+        })
+      };
+
+      fetch(`${CREDENTIALS.BASE_URL}/api/notification`, config)
+      .then((resp) => resp.json())
+      .then((res) => {
+        console.log(res)
+        //this.getAndPrepareData()
+      })
+      .catch((err) => {
+        //this.getAndPrepareData()
+        console.log('err', err.message)
+      })
+    }
+
+
   render() {
 
     const billButtonItem = ({ item }) => (
@@ -234,7 +268,11 @@ class HomeScreen extends Component {
       this.setState({
         notification : false,
         notificationModalVisible: false
-      })
+      },
+      function(){
+        setTimeout(() => {this.notificationViewed()}, 310)
+      }
+      )
     }
 
     const infoModalPopup = () => {
