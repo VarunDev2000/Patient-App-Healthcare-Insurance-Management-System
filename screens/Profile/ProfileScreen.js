@@ -22,19 +22,11 @@ const DATA = [
     card_heading: 'Personal Information',
     ref_name: "personalinfoSelected",
   },
-  {
-    id: '2',
-    card_heading: 'My Bills',
-    ref_name: "myBillsSelected",
-  },
 ];
 
-
-  
 class ProfileScreen extends Component {
     state = {
         height: Dimensions.get("screen").height,
-        personalinfoSelected : true,
         myBillsSelected : false,
         profilePic : require('./res/profilepic.jpg'),
 
@@ -56,22 +48,6 @@ class ProfileScreen extends Component {
 
     async componentDidMount(){
       this.getAndPrepareData();
-    }
-
-    setSelected(id){
-        //console.log(id)
-        if(id == 1){
-            this.setState({
-                personalinfoSelected:true,     
-                myBillsSelected : false
-            })
-        }
-        if(id == 2){
-            this.setState({
-                personalinfoSelected:false,     
-                myBillsSelected : true
-            })
-        }
     }
 
     preparePersonalInfoData = () =>{
@@ -201,8 +177,8 @@ class ProfileScreen extends Component {
   render() {
 
     const renderItem = ({ item }) => (
-          <TouchableOpacity activeOpacity={.9} style={this.state[item.ref_name] == true ? styles.cardSelected : styles.card} onPress={this.setSelected.bind(this,item.id)}>
-            <Text style={this.state[item.ref_name] == true ? styles.cardHeadingSelected : styles.cardHeading}>
+          <TouchableOpacity activeOpacity={.9} style={styles.cardSelected}>
+            <Text style={styles.cardHeadingSelected}>
               {item.card_heading}
             </Text>
           </TouchableOpacity>
@@ -272,64 +248,43 @@ class ProfileScreen extends Component {
             columnWrapperStyle={{justifyContent: 'space-between'}}
             />
         </View>
-            {
-                this.state.personalinfoSelected == true ? (
-                  <CardView
-                  style={styles.bottomLayout1}
-                  cardElevation={2}
-                  cardMaxElevation={3}
-                  cornerRadius={3}>
+        <CardView
+        style={styles.bottomLayout1}
+        cardElevation={2}
+        cardMaxElevation={3}
+        cornerRadius={3}>
+          <View>
+            <ScrollView style={{padding:10}}>
+                  {
+                  this.state.tableData.length > 0 ? (
                     <View>
-                      <ScrollView style={{padding:10}}>
-
-                            {
-                            this.state.tableData.length > 0 ? (
-                              <View>
-                                <Image style={styles.cardImage} source={this.state.profilePic}/>
-                                <IndexTable
-                                  tableTitle = {this.state.tableTitle}
-                                  tableData = {this.state.tableData}
-                                />
-                              </View>
-                              ) : (null)
-                            }
-                            {
-                            /*
-                            <TouchableOpacity activeOpacity={.6} onPress={logOut}>
-                              <Text style={styles.logoutStyle}>LOG OUT</Text>
-                            </TouchableOpacity>
-                            */ 
-                            }
-                      </ScrollView>
+                      <Image style={styles.cardImage} source={this.state.profilePic}/>
+                      <IndexTable
+                        tableTitle = {this.state.tableTitle}
+                        tableData = {this.state.tableData}
+                      />
                     </View>
-                  </CardView>
-                ) : (
-                  <CardView
-                  style={styles.bottomLayout2}
-                  cardElevation={2}
-                  cardMaxElevation={3}
-                  cornerRadius={3}>
-                    <View>
-                        <FlatList
-                          contentContainerStyle={styles.billsListLayout}
-                          data={this.state.billTableData}
-                          renderItem={allBillsItem}
-                          keyExtractor={item => item.id}
-                          style={{padding:5}}
-                          ListFooterComponent={<View style={{height:30}}></View>}
-                        />
-                    </View>
-                  </CardView>
-                )
-            }
+                    ) : (null)
+                  }
+                  {
+                  /*
+                  <TouchableOpacity activeOpacity={.6} onPress={logOut}>
+                    <Text style={styles.logoutStyle}>LOG OUT</Text>
+                  </TouchableOpacity>
+                  */ 
+                  }
+            </ScrollView>
+          </View>
+        </CardView>
 
-          <NotificationModal
-            isModalVisible = {this.state.notificationModalVisible}
-            closeModal = {closeModal}
-            modalTitle = "Fingerprint not enrolled"
-            modelDesc = "Try setting fingerprint authentication on your device"
-            opacity = {0.6}
-          />
+
+        <NotificationModal
+          isModalVisible = {this.state.notificationModalVisible}
+          closeModal = {closeModal}
+          modalTitle = "Fingerprint not enrolled"
+          modelDesc = "Try setting fingerprint authentication on your device"
+          opacity = {0.6}
+        />
 
         </SafeAreaView>
       )
@@ -378,26 +333,12 @@ const styles = StyleSheet.create({
       elevation:5,
       borderRadius:5,
     },
-    card: {
-      width:"46%",
-      margin:"2%",
-      backgroundColor:colors.secondary,
-      elevation:5,
-      borderRadius:5,
-    },
     cardSelected: {
       width:"46%",
       margin:"2%",
       elevation:5,
       backgroundColor: colors.selectedButtonColor,
       borderRadius:5,
-    },
-    cardHeading: {
-      fontSize:14,
-      padding:10,
-      fontStyle:"italic",
-      alignSelf:"center",
-      color : colors.black,
     },
     cardHeadingSelected: {
         fontSize:14,
