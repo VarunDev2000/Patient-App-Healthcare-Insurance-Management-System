@@ -25,7 +25,7 @@ class DrawerContent extends Component {
           style: "cancel"
         },
         { text: "YES", 
-          onPress: () => this.logOut()
+          onPress: () => this.logOut().then(this.props.navigation.navigate("LoginScreen", { token: '<new token>' }))
         }
       ]);
       return true;
@@ -34,13 +34,11 @@ class DrawerContent extends Component {
     logOut = async () => {
       //Store in local storage
       try {
-        const jsonValue1 = JSON.stringify("")
+        //const jsonValue1 = JSON.stringify("")
         const jsonValue2 = JSON.stringify(false)
-        await AsyncStorage.setItem("account", jsonValue1)
+        //await AsyncStorage.setItem("account", jsonValue1)
         await AsyncStorage.setItem("loggedIn", jsonValue2)
 
-        //Redirect to login page
-        this.props.navigation.navigate("LoginScreen")
       } catch (e) {
         console.error("Cannot store data to storage")
       }

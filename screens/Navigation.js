@@ -17,6 +17,7 @@ class Navigation extends Component {
     return (
       <>
         <Stack.Navigator 
+        initialRouteName={"LoginScreen"}
         screenOptions={{ 
           headerShown: false,
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,

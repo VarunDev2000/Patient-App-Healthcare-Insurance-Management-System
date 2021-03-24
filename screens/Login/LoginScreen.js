@@ -46,11 +46,13 @@ class LoginScreen extends Component {
           usernameErrorText : "Required",
           passwordError : false,
           passwordErrorText : "Required",
+
+          token:""
       }
       this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
       LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
 
       this.getLoginData();
@@ -81,12 +83,14 @@ class LoginScreen extends Component {
     getLoginData = async () => {
       try {
         const loggedIn = await AsyncStorage.getItem('loggedIn')
-        console.log(loggedIn)
 
         if(loggedIn != null) {
           const data = JSON.parse(loggedIn)
           this.setState({
             loggedIn : data,
+          },
+          function(){
+            //console.log(this.state.loggedIn)
           })
         }
         if (loggedIn != "true"){
@@ -165,7 +169,7 @@ class LoginScreen extends Component {
         //this.props.handlePopupDismissedLegacy();
       })
       .catch((error) => {
-        console.log(error)
+        console.error(error)
 
         if(error.name == "FingerprintScannerNotEnrolled"){
           this.setState({

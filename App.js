@@ -6,6 +6,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import ProfileScreen from "./screens/Profile/ProfileScreen";
 import Navigation from "./screens/Navigation";
+import LoginScreen from "./screens/Login/LoginScreen";
 
 import DrawerContent from './screens/Drawer/DrawerContent';
 

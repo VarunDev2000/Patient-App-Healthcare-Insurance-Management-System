@@ -54,7 +54,7 @@ class ProfileScreen extends Component {
         error : "",
     }
 
-    componentDidMount(){
+    async componentDidMount(){
       this.getAndPrepareData();
     }
 
@@ -315,6 +315,8 @@ class ProfileScreen extends Component {
                           data={this.state.billTableData}
                           renderItem={allBillsItem}
                           keyExtractor={item => item.id}
+                          style={{padding:5}}
+                          ListFooterComponent={<View style={{height:30}}></View>}
                         />
                     </View>
                   </CardView>
@@ -356,7 +358,6 @@ const styles = StyleSheet.create({
     },
     bottomLayout2: {
       flex:1,
-      padding:8,
       margin:8,
       marginTop:8,
       marginBottom:"12%",
