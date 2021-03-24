@@ -30,7 +30,7 @@ const BILL_BUTTON_DATA = [
   {
     id: '2',
     card_heading: 'OLD BILLS',
-    img: require('./res/oldBills.png'),
+    img: require('./res/oldBills.jpg'),
     nav: 'OldBills',
   },
 

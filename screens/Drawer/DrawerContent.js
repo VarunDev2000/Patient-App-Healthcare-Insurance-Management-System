@@ -192,7 +192,7 @@ class DrawerContent extends Component {
                         <View style={{flexDirection:'row'}}>
                             <Avatar.Image 
                                 source={
-                                    require('./res/user1.png')
+                                    require('./res/user1.jpg')
                                 }
                                 size={60}
                                 style={{marginTop:0,backgroundColor:"white"}}
