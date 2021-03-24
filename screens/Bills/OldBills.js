@@ -81,7 +81,7 @@ class OldBills extends Component {
 
     return (
         <SafeAreaView style={{ height: this.state.height,backgroundColor: colors.bgColor }}>
-        <StatusBar backgroundColor="black" />
+        <StatusBar backgroundColor={colors.primary} />
         <View style={{flex:1}}>
         <View style={styles.topLayout}>
           <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.goBack()}>
@@ -89,7 +89,7 @@ class OldBills extends Component {
           </TouchableOpacity>
           <Text style={styles.pageTitle}> OLD  BILLS </Text>
           <TouchableOpacity activeOpacity={1} onPress={null}>
-            <Icon name="notifications" size={25} color="black" style={{marginRight:18}}/>
+            <Icon name="notifications" size={25} color={colors.primary} style={{marginRight:18}}/>
           </TouchableOpacity>
         </View>
 
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     topLayout: {
       flex:0,
       flexDirection:"row",
-      height: "9%",
+      height: "7%",
       width:"100%",
       backgroundColor: colors.primary,
       alignItems:"center",

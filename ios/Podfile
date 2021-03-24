@@ -12,6 +12,8 @@ target 'App' do
 
   pod 'react-native-fingerprint-scanner', :path => '../node_modules/react-native-fingerprint-scanner'
 
+  pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
+
   target 'AppTests' do
     inherit! :complete
     # Pods for testing

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, LogBox } from "react-native";
+import { Text, LogBox, StatusBar } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";

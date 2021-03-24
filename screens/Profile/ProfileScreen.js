@@ -222,7 +222,7 @@ class ProfileScreen extends Component {
     return (
       this.state.error != "" ? (infoModalPopup()) : (
         <SafeAreaView style={{ height: this.state.height,backgroundColor: colors.bgColor }}>
-        <StatusBar backgroundColor="black" />
+        <StatusBar backgroundColor={colors.primary} />
         <View style={styles.topLayout}>
           <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.toggleDrawer()}>
             <Icon name="menu-sharp" size={28} color={colors.topBarIconColor} style={{marginLeft:18,paddingRight:10}}/>
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     topLayout: {
       flex:0,
       flexDirection:"row",
-      height: "9%",
+      height: "7%",
       width:"100%",
       backgroundColor: colors.primary,
       alignItems:"center",
