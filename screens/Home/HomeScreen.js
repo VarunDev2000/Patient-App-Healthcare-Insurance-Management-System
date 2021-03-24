@@ -46,8 +46,9 @@ class HomeScreen extends Component {
 
         tableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE','STATUS'],
         billData: [],
+        notificationData: [],
 
-        notification: true,
+        notification: false,
         notificationModalVisible: false,
 
         error : "",
@@ -86,6 +87,39 @@ class HomeScreen extends Component {
       //console.log(billData)
       this.setState({
         billData : billData,
+      },
+      this.prepareNotificationData())
+    }
+
+    prepareNotificationData = () =>{
+      let data = this.state.data.reverse();
+      let account = this.state.account;
+
+      let notificationData = [];
+
+      for(var i = 0; i < data.length; i++){
+        if(data[i][7] === account && data[i][10] == false){
+
+          //console.log(data[0])
+
+          if(data[i][8] != 0){
+            let temp = {};
+
+            temp['id'] = data[i][0].toString();
+            temp['testname'] = data[i][3];
+            temp['price'] = data[i][1];
+            temp['status'] = data[i][8];
+            
+            notificationData.push(temp)
+            //console.log(data[i][3])
+          }
+        }
+      }
+
+      //console.log(notificationData)
+      this.setState({
+        notificationData : notificationData,
+        notification : notificationData.length > 0 ? (true) : (false),
         loadervisible: false,
       })
     }
@@ -98,6 +132,7 @@ class HomeScreen extends Component {
         },
           function() {
             this.prepareBillData()
+            this.prepareNotificationData()
           }
         )
       } catch(e) {
@@ -239,6 +274,7 @@ class HomeScreen extends Component {
                     contentContainerStyle={styles.bottomLayout}
                     data={this.state.billData}
                     renderItem={currentBillsItem}
+                    ListFooterComponent={<View style={{height:350}}></View>}
                     keyExtractor={item => item.id}
                   />
                 ) : (
@@ -253,10 +289,8 @@ class HomeScreen extends Component {
 
                 <NotificationModal
                   isModalVisible = {this.state.notificationModalVisible}
+                  data = {this.state.notificationData}
                   closeModal = {closeModal}
-                  modalTitle = "Fingerprint not enrolled"
-                  modelDesc = "Try setting fingerprint authentication on your device"
-                  opacity = {0.6}
                 />
 
             </View>

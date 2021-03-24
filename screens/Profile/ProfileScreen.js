@@ -5,14 +5,10 @@ import CardView from 'react-native-cardview';
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from '@react-native-community/async-storage';
 import IndexTable from '../../Components/IndexTable';
-import BillTable from '../../Components/BillTable';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import Icon1 from 'react-native-vector-icons/Octicons';
 
 import colors  from "../../config/colors";
-
-import NotificationModal from '../../Components/NotificationModal';
 
 import Loader from "../../Components/Loader";
 
@@ -43,9 +39,6 @@ class ProfileScreen extends Component {
         billsData: [],
         billTableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE'],
         billTableData: [],
-
-        notification: true,
-        notificationModalVisible: false,
 
         error : "",
     }
@@ -132,18 +125,6 @@ class ProfileScreen extends Component {
           </TouchableOpacity>
       );
 
-      const notificationClick = () =>{
-        this.setState({
-          notificationModalVisible:true,
-          notification:false
-        })
-      }
-      const closeModal = () =>{
-        this.setState({
-          notification : false,
-          notificationModalVisible: false
-        })
-      }
 
       const infoModalPopup = () => {
         Alert.alert("Network Error", "Cannot cannot to network. Try again later", [
@@ -163,13 +144,8 @@ class ProfileScreen extends Component {
             <Icon name="menu-sharp" size={28} color={colors.topBarIconColor} style={{marginLeft:18,paddingRight:10}}/>
           </TouchableOpacity>
           <Text style={styles.pageTitle}> PROFILE </Text>
-          <TouchableOpacity activeOpacity={.8} onPress={() => notificationClick()}>
-            <Icon name="notifications" size={24} color={colors.topBarIconColor} style={{marginRight:18,paddingLeft:10}}/>
-            {
-              this.state.notification ? (
-                <Icon1 name="primitive-dot" size={20} color="red" style={{paddingLeft:22.3,paddingBottom:20,position:"absolute"}}/>
-              ) : (null)
-            }
+          <TouchableOpacity activeOpacity={1} onPress={() => null}>
+            <Icon name="notifications" size={24} color={colors.primary} style={{marginRight:18,paddingLeft:10}}/>
           </TouchableOpacity>
         </View>
 
@@ -215,14 +191,6 @@ class ProfileScreen extends Component {
           </View>
         </CardView>
 
-
-        <NotificationModal
-          isModalVisible = {this.state.notificationModalVisible}
-          closeModal = {closeModal}
-          modalTitle = "Fingerprint not enrolled"
-          modelDesc = "Try setting fingerprint authentication on your device"
-          opacity = {0.6}
-        />
         </View>
         )}
 
