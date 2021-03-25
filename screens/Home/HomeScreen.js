@@ -49,6 +49,7 @@ class HomeScreen extends Component {
         tableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE','STATUS'],
         billData: [],
         notificationData: [],
+        viewedNotifications: [],
 
         notification: false,
         notificationModalVisible: false,
@@ -81,7 +82,11 @@ class HomeScreen extends Component {
             temp['tableData'].push([data[i][4]])
             temp['tableData'].push([data[i][5]])
             temp['tableData'].push([data[i][1]])
-            temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="time" size={23} color="#c9c930" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"#c9c930"}}>PENDING </Text></View>])
+            temp['tableData'].push([<View>
+                                      <View style={{flexDirection:"row"}}><Icon name="time" size={23} color="#c9c930" style={{marginLeft:12}}/>
+                                        <Text numberOfLines={1} style={{width:"80%", margin:5,fontWeight:"bold",marginTop:3,color:"#c9c930"}}>{data[i][2] >=2 ? ("APPROVED BY HOSPITAL ") : ("PENDING ")}</Text>
+                                      </View>
+                                      </View>])
 
             billData.push(temp)
           }
@@ -99,14 +104,28 @@ class HomeScreen extends Component {
       let data = this.state.data.reverse();
       let account = this.state.account;
 
+      let viewedNotifications = this.state.viewedNotifications;
+      //console.log(viewedNotifications)
+      
       let notificationData = [];
+
+      let newData =  [];
+
+      for(var i = 0; i < data.length; i++){
+        if(!viewedNotifications.includes(data[i][0])){
+          newData.push(data[i]);
+          //console.log(data[i][0])
+        }
+      }
+
+      data = newData;
 
       for(var i = 0; i < data.length; i++){
         if(data[i][7] === account && data[i][10] == false){
 
           //console.log(data[0])
 
-          if(data[i][8] != 0){
+          if(data[i][8] != 0 | (data[i][8] == 0 && data[i][2] == 2)){
             let temp = {};
 
             temp['id'] = data[i][0].toString();
@@ -126,7 +145,7 @@ class HomeScreen extends Component {
         loadervisible: false,
       },
       function(){
-      setTimeout(() => {this.setState({showNotifier: true,notification : notificationData.length > 0 ? (true) : (false),})}, 500)
+      setTimeout(() => {this.setState({showNotifier: notificationData.length > 0 ? (true) : (false),notification : notificationData.length > 0 ? (true) : (false)})}, 500)
       //setTimeout(() => {this.setState({showNotifier: false})},4000)
       }
     )
@@ -145,13 +164,13 @@ class HomeScreen extends Component {
         )
       } catch(e) {
         this.setState({
-          error : err
+          error : e
         })
         console.error("Cannot fetch data from storage " + e)
       }
     }
 
-    getAndPrepareData = () =>{
+    getAndPrepareData = async () =>{
       //set to initial state
       this.setState({
         loadervisible : true,
@@ -159,6 +178,16 @@ class HomeScreen extends Component {
         notificationModalVisible: false,
         showNotifier : false,
       })
+
+      
+      var viewedNotifications = await AsyncStorage.getItem("viewedNotifications")
+      if(viewedNotifications != null){
+        this.setState({
+          viewedNotifications : viewedNotifications
+        })
+      }
+      //console.log(viewedNotifications)
+
 
       const config = {
         method: 'GET',
@@ -193,37 +222,24 @@ class HomeScreen extends Component {
       })
     }
 
-    notificationViewed = () =>{
+    notificationViewed = async () =>{
       let data = this.state.notificationData;
+      let viewedNotifications = [];
 
-      let l = [];
-
-      for(var i = 0; i < data.length; i++){
-        l.push(data[i].id);
+      //get previous notification data
+      const val = await AsyncStorage.getItem('viewedNotifications')
+      if(val != null){
+        viewedNotifications = JSON.parse(val)
       }
-      //console.log(l)
 
-      const config = {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          data: l,
-        })
-      };
+      for (var i = 0; i < data.length; i++){
+        viewedNotifications.push(parseInt(data[i].id))
+      }
 
-      fetch(`${CREDENTIALS.BASE_URL}/api/notification`, config)
-      .then((resp) => resp.json())
-      .then((res) => {
-        console.log(res)
-        //this.getAndPrepareData()
-      })
-      .catch((err) => {
-        //this.getAndPrepareData()
-        console.log('err', err.message)
-      })
+      //console.log(viewedNotifications);
+
+      const jsonValue = JSON.stringify(viewedNotifications)
+      await AsyncStorage.setItem("viewedNotifications", jsonValue)
     }
 
 

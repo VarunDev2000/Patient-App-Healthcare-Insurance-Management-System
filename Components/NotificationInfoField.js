@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     errorOuterLayout: {
         flex : 0,
         flexDirection:"row",
-        padding:10,
+        padding:5,
         marginBottom:0,
         justifyContent:"center",
         alignItems:"center",

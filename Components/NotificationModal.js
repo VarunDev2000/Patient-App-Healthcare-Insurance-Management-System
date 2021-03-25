@@ -30,15 +30,26 @@ class NotificationModal extends Component {
         <Icon name="rupee" size={18} color="black" style={{marginLeft:"10%",marginRight:5,marginTop:1}}/>
         <Text numberOfLines={1} style={{width:"20%"}}>{item.price}</Text>
       </View>
-      <View style={{flex:0.4,width:"30%",flexDirection:"row",borderTopRightRadius:5,borderBottomRightRadius:5,padding:25,justifyContent:"center",alignItems:"center",color:"white",backgroundColor: item.status == 1 ? ("green") : ("#d93030")}}>
+      <View style={[styles.statusView,{backgroundColor: item.status == 1 ? ("green") : (item.status == 2 ? ("#d93030") : ("#c9c930"))}]}>
         {
           item.status == 1 ? (
-            <Icon3 name="checkmark-circle" size={23} color="white" style={{marginRight:5}}/>
+            <View style={{flexDirection:"row"}}>
+              <Icon3 name="checkmark-circle" size={23} color="white" style={{marginRight:5}}/>
+              <Text numberOfLines={1} style={{color:"white",marginTop:3}}>Accepted</Text>
+            </View>
           ) : (
-            <Icon4 name="cancel" size={23} color="white" style={{marginRight:5}}/>
-          )
+          item.status == 2 ? (
+            <View style={{flexDirection:"row"}}>
+              <Icon4 name="cancel" size={23} color="white" style={{marginRight:5}}/>
+              <Text numberOfLines={1} style={{color:"white",marginTop:3}}>Rejected</Text>
+            </View>
+          ) : (
+            <View style={{flexDirection:"row"}}>
+              <Icon3 name="time" size={23} color="white" style={{marginRight:5}}/>
+              <Text style={{width:"85%",color:"white",fontSize:12}}>Approved by hospital</Text>
+            </View>
+          ))
         }
-        <Text numberOfLines={1} style={{color:"white"}}>{item.status == 1 ? ("Accepted") : ("Rejected")}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -113,6 +124,17 @@ const styles = StyleSheet.create({
     paddingBottom:10,
     borderBottomColor: '#f4f4f4',
     borderBottomWidth: 1
+  },
+  statusView: {
+    flex:0.4,
+    width:"30%",
+    flexDirection:"row",
+    borderTopRightRadius:5,
+    borderBottomRightRadius:5,
+    padding:25,
+    justifyContent:"center",
+    alignItems:"center",
+    color:"white",
   },
   buttonOuterLayout:{
     padding:5,
