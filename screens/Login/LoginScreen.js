@@ -184,7 +184,8 @@ class LoginScreen extends Component {
       .then((resp) => resp.json())
       .then((res) => {
         //console.log(res)
-        setTimeout(() => {this.setState({accountExist: true,loadervisible: false},biometricAuthenticate())}, 2000)
+        setTimeout(() => {this.setState({accountExist: true},biometricAuthenticate())}, 2000)
+        setTimeout(() => {this.setState({loadervisible: false})}, 2300)
       })
       .catch((err) => {
         if(err.message === "Network request failed"){

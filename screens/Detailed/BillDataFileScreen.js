@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { SafeAreaView, Dimensions, View,
-  TouchableOpacity, StyleSheet, StatusBar, Image  } from "react-native";
-import CardView from 'react-native-cardview';
+  TouchableOpacity, StyleSheet, StatusBar, Image, Text  } from "react-native";
+import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Icon1 from 'react-native-vector-icons/MaterialIcons';
 
 import colors  from "../../config/colors";
 
@@ -12,18 +13,48 @@ class BillDataFileScreen extends Component {
         height: Dimensions.get("screen").height,
     }
 
+    componentDidMount(){
+      //console.log(this.props.route.params.hash)
+    }
+
   render() {
 
     return (
         <SafeAreaView style={{ height: this.state.height,backgroundColor: colors.bgColor }}>
         <StatusBar backgroundColor={colors.primary} />
-        <View style={{flex:1}}>
-        <View style={styles.topLayout}>
-          <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.goBack()}>
-            <Icon name="arrow-back-sharp" size={30} color={colors.topBarIconColor} style={{marginLeft:18}}/>
-          </TouchableOpacity>
-        </View>
-        </View>
+          <View style={{flex:1}}>
+            <View style={styles.topLayout}>
+              <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.goBack()}>
+                <Icon name="arrow-back-sharp" size={30} color={colors.topBarIconColor} style={{marginLeft:18}}/>
+              </TouchableOpacity>
+              <View style = {styles.infoBox}>
+                <Icon1 name="info" size={25} color="#856a00" style={{alignSelf:"center"}}/>
+                <Text style = {styles.infoText}>Pinch to zoom</Text>
+              </View>
+            </View>
+            <View style={{flex : 1}}>
+              <ReactNativeZoomableView
+                  maxZoom={2}
+                  minZoom={0.5}
+                  zoomStep={0.5}
+                  initialZoom={1}
+                  bindToBorders={true}
+                  style={{
+                      backgroundColor: 'white',
+                      justifyContent:"center",
+                      alignItems:"center",
+                  }}
+                >
+                <Image style={styles.cardImage} 
+                  source={{
+                    uri: `http://ipfs.infura.io/ipfs/${this.props.route.params.hash}`,
+                  }} 
+                />
+              </ReactNativeZoomableView>
+              <View style={{height : 100}}>
+              </View>
+            </View>
+          </View>
 
         </SafeAreaView>
     );
@@ -34,55 +65,39 @@ const styles = StyleSheet.create({
     topLayout: {
       flex:0,
       flexDirection:"row",
-      height: "7%",
       width:"100%",
       backgroundColor: colors.primary,
       alignItems:"center",
       justifyContent:"space-between",
+      elevation:2
     }, 
-    bottomLayout:{
-      paddingBottom:50,
-    },
-    card: {
-      width:"46%",
-      margin:"2%",
-      backgroundColor:colors.secondary,
-      elevation:5,
-      borderRadius:5,
-    },
-    billCard: {
-      width:"96%",
-      margin:"2%",
-      marginTop:17,
-      marginBottom:10,
-      backgroundColor:colors.secondary,
-      elevation:5,
-      borderRadius:5,
-    },
-    cardHeading: {
-      fontSize:13,
-      padding:10,
-      fontStyle:"italic",
-      alignSelf:"center",
-      color : colors.black,
-    },
-    cardHeadingSelected: {
-        fontSize:14,
-        padding:10,
-        fontWeight:"bold",
-        fontStyle:"italic",
-        alignSelf:"center",
-        color : colors.selectedTextColor,
-    },
     cardImage: {
-      width:"100%",
-      height:170,
+      width:"80%",
+      height: "50%",
       marginBottom:2,
+      alignSelf:"center",
+      marginBottom:30,
+      marginTop:70,
+      resizeMode:"contain"
     },
-    pageTitle: {
-      fontSize:18,
-      fontWeight:"bold",
-      color:colors.secondary,
+    infoBox: {
+      flex:0,
+      flexDirection:"row",
+      flexWrap:"wrap",
+      padding:5,
+      paddingLeft:7,
+      paddingRight:17,
+      margin:15,
+      elevation:2,
+      borderRadius:5,
+      backgroundColor: "white",
+    },
+    infoText: {
+      fontSize:15,
+      marginLeft:12,
+      textAlign: 'justify',
+      lineHeight: 23,
+      color: "#856a00",
     },
   });
 export default BillDataFileScreen;

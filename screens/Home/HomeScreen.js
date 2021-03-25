@@ -7,7 +7,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/Octicons';
-import Icon3 from 'react-native-vector-icons/FontAwesome';
 import BillTable from '../../Components/BillTable';
 
 import NotificationModal from '../../Components/NotificationModal';
@@ -82,9 +81,9 @@ class HomeScreen extends Component {
             temp['tableData'].push([data[i][4]])
             temp['tableData'].push([data[i][5]])
             temp['tableData'].push([data[i][1]])
-            var id = data[i][0];
+            var hash = data[i][9];
             temp['tableData'].push([
-              <TouchableOpacity activeOpacity={.8} onPress={() => this.props.navigation.navigate("BillDataFileScreen",{id : id})}>
+              <TouchableOpacity activeOpacity={.8} onPress={() => this.props.navigation.navigate("BillDataFileScreen",{hash : hash})}>
                 <Text numberOfLines={1} style={{width:"100%",textAlign:"left", margin:5,marginLeft:16,fontSize:15,fontFamily:"Poppins-Medium",marginTop:3,color:"#3495eb",textDecorationLine:"underline"}}>View</Text>
               </TouchableOpacity>
             ])
