@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { SafeAreaView, Dimensions, View,
   TouchableOpacity, StyleSheet, StatusBar, Image, Text  } from "react-native";
-import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
+import { WebView } from 'react-native-webview';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 
@@ -14,7 +14,7 @@ class BillDataFileScreen extends Component {
     }
 
     componentDidMount(){
-      //console.log(this.props.route.params.hash)
+      console.log(this.props.route.params.hash)
     }
 
   render() {
@@ -27,32 +27,13 @@ class BillDataFileScreen extends Component {
               <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.goBack()}>
                 <Icon name="arrow-back-sharp" size={30} color={colors.topBarIconColor} style={{marginLeft:18}}/>
               </TouchableOpacity>
-              <View style = {styles.infoBox}>
-                <Icon1 name="info" size={25} color="#856a00" style={{alignSelf:"center"}}/>
-                <Text style = {styles.infoText}>Pinch to zoom</Text>
-              </View>
             </View>
             <View style={{flex : 1}}>
-              <ReactNativeZoomableView
-                  maxZoom={2}
-                  minZoom={0.5}
-                  zoomStep={0.5}
-                  initialZoom={1}
-                  bindToBorders={true}
-                  style={{
-                      backgroundColor: 'white',
-                      justifyContent:"center",
-                      alignItems:"center",
-                  }}
-                >
-                <Image style={styles.cardImage} 
-                  source={{
-                    uri: `http://ipfs.infura.io/ipfs/${this.props.route.params.hash}`,
-                  }} 
-                />
-              </ReactNativeZoomableView>
-              <View style={{height : 100}}>
-              </View>
+              <WebView 
+              source={{ uri: `http://ipfs.infura.io/ipfs/${this.props.route.params.hash}`}} 
+              originWhitelist={["*"]}
+              useWebKit
+              />
             </View>
           </View>
 
@@ -65,11 +46,11 @@ const styles = StyleSheet.create({
     topLayout: {
       flex:0,
       flexDirection:"row",
+      height: "7%",
       width:"100%",
       backgroundColor: colors.primary,
       alignItems:"center",
       justifyContent:"space-between",
-      elevation:2
     }, 
     cardImage: {
       width:"80%",

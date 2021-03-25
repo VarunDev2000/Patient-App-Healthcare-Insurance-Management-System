@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { SafeAreaView, Dimensions, View, LogBox,
-  Text, TouchableOpacity, StyleSheet, StatusBar, FlatList,  Image, RefreshControl  } from "react-native";
+  Text, TouchableOpacity, StyleSheet, StatusBar, FlatList,  Image  } from "react-native";
 import CardView from 'react-native-cardview';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
@@ -46,7 +46,7 @@ class OldBills extends Component {
             temp['tableData'].push([data[i][4]])
             temp['tableData'].push([data[i][5]])
             temp['tableData'].push([data[i][1]])
-            var hash = data[i][9];
+            const hash = data[i][9];
             temp['tableData'].push([
               <TouchableOpacity activeOpacity={.8} onPress={() => this.props.navigation.navigate("BillDataFileScreen",{hash : hash})}>
                 <Text numberOfLines={1} style={{width:"100%",textAlign:"left", margin:5,marginLeft:16,fontSize:15,fontFamily:"Poppins-Medium",marginTop:3,color:"#3495eb",textDecorationLine:"underline"}}>View</Text>
