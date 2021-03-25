@@ -46,7 +46,7 @@ class HomeScreen extends Component {
         data : [],
         account : "",
 
-        tableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE','STATUS'],
+        tableTitle: ['BILL ID', 'TEST NAME', 'DATE', 'HOSPITAL NAME','PRICE','BILL DOCUMENT','STATUS'],
         billData: [],
         notificationData: [],
         viewedNotifications: [],
@@ -82,11 +82,17 @@ class HomeScreen extends Component {
             temp['tableData'].push([data[i][4]])
             temp['tableData'].push([data[i][5]])
             temp['tableData'].push([data[i][1]])
+            var id = data[i][0];
+            temp['tableData'].push([
+              <TouchableOpacity activeOpacity={.8} onPress={() => this.props.navigation.navigate("BillDataFileScreen",{id : id})}>
+                <Text numberOfLines={1} style={{width:"100%",textAlign:"left", margin:5,marginLeft:16,fontSize:15,fontFamily:"Poppins-Medium",marginTop:3,color:"#3495eb",textDecorationLine:"underline"}}>View</Text>
+              </TouchableOpacity>
+            ])
             temp['tableData'].push([<View>
                                       <View style={{flexDirection:"row"}}><Icon name="time" size={23} color="#c9c930" style={{marginLeft:12}}/>
                                         <Text numberOfLines={1} style={{width:"80%", margin:5,fontWeight:"bold",marginTop:3,color:"#c9c930"}}>{data[i][2] >=2 ? ("APPROVED BY HOSPITAL ") : ("PENDING ")}</Text>
                                       </View>
-                                      </View>])
+                                    </View>])
 
             billData.push(temp)
           }
@@ -313,10 +319,10 @@ class HomeScreen extends Component {
               <Text style={styles.pageTitle}> HOME </Text>
               <View style={{flexDirection:"row"}}>
                 <TouchableOpacity activeOpacity={.6} onPress={() => this.getAndPrepareData()}>
-                  <Icon3 name="refresh" size={22} color={colors.topBarIconColor} style={{marginRight:20,marginTop:1}}/>
+                  <Icon name="refresh" size={25} color={colors.topBarIconColor} style={{marginRight:20,marginBottom:0}}/>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={.8} onPress={() => notificationClick()}>
-                  <Icon name="notifications" size={24} color={colors.topBarIconColor} style={{marginRight:18,paddingLeft:10}}/>
+                  <Icon name="notifications" size={24} color={colors.topBarIconColor} style={{marginRight:18,paddingLeft:10,marginTop:2}}/>
                   {
                     this.state.notification ? (
                       <Icon2 name="primitive-dot" size={20} color="red" style={{paddingLeft:22.3,paddingBottom:20,position:"absolute"}}/>
@@ -360,7 +366,7 @@ class HomeScreen extends Component {
                     contentContainerStyle={styles.bottomLayout}
                     data={this.state.billData}
                     renderItem={currentBillsItem}
-                    ListFooterComponent={<View style={{height:350}}></View>}
+                    ListFooterComponent={<View style={{height:330}}></View>}
                     keyExtractor={item => item.id}
                   />
                 ) : (

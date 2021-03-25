@@ -25,7 +25,7 @@ class DetailedScreen extends Component {
     }
 
     componentDidMount(){
-      console.log(this.props.route.params.id);
+      //console.log(this.props.route.params.id);
       this.prepareBillData(this.props.route.params.data, this.props.route.params.id)
     }
 

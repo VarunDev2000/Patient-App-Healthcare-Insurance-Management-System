@@ -47,6 +47,8 @@ class LoginScreen extends Component {
           passwordErrorText : "Required",
 
           accountExist: true,
+
+          error:"",
       }
       this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
@@ -185,10 +187,19 @@ class LoginScreen extends Component {
         setTimeout(() => {this.setState({accountExist: true,loadervisible: false},biometricAuthenticate())}, 2000)
       })
       .catch((err) => {
-        setTimeout(() => {this.setState({accountExist: false,loadervisible: false})}, 2000)
-        setTimeout(() => {this.setState({accountExist: true})}, 5000)
-        console.log("Account do not exist")
-        console.log('err', err.message)
+        if(err.message === "Network request failed"){
+          this.setState({
+            accountExist: false,
+            loadervisible: false,
+            error : err
+          })
+        }
+        else{
+          setTimeout(() => {this.setState({accountExist: false,loadervisible: false})}, 2000)
+          setTimeout(() => {this.setState({accountExist: true})}, 5000)
+          console.log("Account do not exist")
+        }
+        console.log('err', err)
       })
     }
 
@@ -255,13 +266,22 @@ class LoginScreen extends Component {
       })
     }
 
+    const infoModalPopup = () => {
+      Alert.alert("Network Error", "Cannot cannot to network. Try again later", [
+        { text: "OK", 
+        onPress: () => BackHandler.exitApp()
+        }
+      ]);
+      return true;
+    }
+
     if(this.state.loggedIn)
     {
       return <HomeScreen navigation={this.props.navigation}/>
     }
     else{
       return (
-
+        this.state.error != "" ? (infoModalPopup()) : (
         <View style={{flex: 1, backgroundColor:"white"}}>
           <StatusBar backgroundColor={colors.primary} />
 
@@ -355,6 +375,7 @@ class LoginScreen extends Component {
               </KeyboardAwareView>
               </View>
               </View>
+        )
       );
   }
   }
