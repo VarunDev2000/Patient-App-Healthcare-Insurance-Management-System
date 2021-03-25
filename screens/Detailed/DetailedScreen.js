@@ -11,11 +11,11 @@ import Loader from "../../Components/Loader";
 import colors  from "../../config/colors";
 
 
-class AllBills extends Component {
+class DetailedScreen extends Component {
     state = {
         height: Dimensions.get("screen").height,
 
-        loadervisible : true,
+        loadervisible: true,
 
         data: [],
         account: "",
@@ -25,17 +25,17 @@ class AllBills extends Component {
     }
 
     componentDidMount(){
-      //console.log(this.props.route.params.data);
-      this.prepareBillData(this.props.route.params.data, this.props.route.params.account)
+      console.log(this.props.route.params.id);
+      this.prepareBillData(this.props.route.params.data, this.props.route.params.id)
     }
 
-    prepareBillData = (data, account) =>{
+    prepareBillData = (data, id) =>{
       let billData = [];
-      var data = data;
 
       for(var i = 0; i < data.length; i++){
-        if(data[i][7] === account)
+        if(data[i][0] == id)
         {
+          var status = data[i][8] == 1 ? ("Approved") : (data[i][8] == 2 ? ("Rejected") : ("Pending"))
             let temp = {};
             temp['id'] =  (i+1).toString();
 
@@ -47,20 +47,22 @@ class AllBills extends Component {
             temp['tableData'].push([data[i][1]])
           
 
-            if(data[i][8] == 0)
+            if(status === "Approved")
             {
-              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="time" size={23} color="#c9c930" style={{marginLeft:12}}/><Text numberOfLines={1} style={{width:"80%", margin:5,fontWeight:"bold",marginTop:3,color:"#c9c930"}}>{data[i][2] >=2 ? ("APPROVED BY HOSPITAL ") : ("PENDING ")}</Text></View>])
+              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="checkmark-circle" size={23} color="green" style={{marginLeft:12}}/><Text style={{width:"80%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"green"}}>APPROVED </Text></View>])
             }
-            else if(data[i][8] == 1)
+            else if(status === "Rejected")
             {
-              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="checkmark-circle" size={23} color="green" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"green"}}>APPROVED </Text></View>])
+              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon1 name="cancel" size={23} color="red" style={{marginLeft:12}}/><Text style={{width:"80%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"red"}}>REJECTED </Text></View>])
             }
-            else if(data[i][8] == 2)
+            else if(status === "Pending")
             {
-              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon1 name="cancel" size={23} color="red" style={{marginLeft:12}}/><Text style={{width:"40%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"red"}}>REJECTED </Text></View>])
+              temp['tableData'].push([<View style={{flexDirection:"row"}}><Icon name="time" size={23} color="#c9c930" style={{marginLeft:12}}/><Text numberOfLines={1} style={{width:"80%", marginLeft:5,fontWeight:"bold",marginTop:2,color:"#c9c930",marginTop:3}}>{data[i][2] >=2 ? ("APPROVED BY HOSPITAL ") : ("PENDING ")}</Text></View>])
             }
 
             billData.push(temp)
+
+            break;
         }
       }
 
@@ -94,11 +96,8 @@ class AllBills extends Component {
           <TouchableOpacity activeOpacity={.6} onPress={() => this.props.navigation.goBack()}>
             <Icon name="arrow-back-sharp" size={30} color={colors.topBarIconColor} style={{marginLeft:18}}/>
           </TouchableOpacity>
-          <Text style={styles.pageTitle}> ALL  BILLS </Text>
-          <TouchableOpacity activeOpacity={1} onPress={null}>
-            <Icon name="notifications" size={25} color={colors.primary} style={{marginRight:18}}/>
-          </TouchableOpacity>
         </View>
+
         {this.state.loadervisible == true ? (<Loader />) : (
           <FlatList
             contentContainerStyle={styles.bottomLayout}
@@ -170,4 +169,4 @@ const styles = StyleSheet.create({
       color:colors.secondary,
     },
   });
-export default AllBills;
+export default DetailedScreen;

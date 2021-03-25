@@ -35,7 +35,7 @@ class OldBills extends Component {
       for(var i = 0; i < data.length; i++){
         if(data[i][7] === account)
         {
-          var status = data[i][8] ? ("Approved") : (data[i][9] ? ("Rejected") : ("Pending"))
+          var status = data[i][8] == 1 ? ("Approved") : (data[i][8] == 2 ? ("Rejected") : ("Pending"))
           if(status !== "Pending"){
             let temp = {};
             temp['id'] =  (i+1).toString();

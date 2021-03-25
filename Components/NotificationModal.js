@@ -22,8 +22,13 @@ class NotificationModal extends Component {
     this.props.closeModal();
   };
 
+  const navigateToDetailed = (id) =>{
+    closeModal()
+    setTimeout(() => {this.props.navigation.navigate("DetailedScreen",{id:id, data:this.props.allData})}, 350)
+  }
+
   const notificationItem = ({ item }) => (
-    <TouchableOpacity activeOpacity={.8} onPress={() => null} style={styles.notificationCard}>
+    <TouchableOpacity activeOpacity={.8} onPress={() => navigateToDetailed(item.id)} style={styles.notificationCard}>
       <View style={{flex:1,flexDirection:"row",padding:15}}>
         <Icon1 name="blood-test" size={18} color="black" style={{marginRight:10}}/>
         <Text numberOfLines={1} style={{width:"20%"}}>{item.testname}</Text>

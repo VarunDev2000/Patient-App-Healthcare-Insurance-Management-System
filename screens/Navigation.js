@@ -6,6 +6,7 @@ import HomeScreen from "./Home/HomeScreen";
 import OldBills from "./Bills/OldBills";
 import AllBills from "./Bills/AllBills";
 import ProfileScreen from "./Profile/ProfileScreen";
+import DetailedScreen from "./Detailed/DetailedScreen";
 
 import DrawerContent from "./Drawer/DrawerContent"
 
@@ -26,6 +27,7 @@ class Navigation extends Component {
           <Stack.Screen name="OldBills" component={OldBills} />
           <Stack.Screen name="AllBills" component={AllBills} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+          <Stack.Screen name="DetailedScreen" component={DetailedScreen} />
 
           <Stack.Screen name="DrawerContent" component={DrawerContent} />
         </Stack.Navigator>

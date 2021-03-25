@@ -376,7 +376,9 @@ class HomeScreen extends Component {
                 <NotificationModal
                   isModalVisible = {this.state.notificationModalVisible}
                   data = {this.state.notificationData}
+                  allData = {this.state.data}
                   closeModal = {closeModal}
+                  navigation = {this.props.navigation}
                 />
 
             </View>
