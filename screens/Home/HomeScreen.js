@@ -150,7 +150,7 @@ class HomeScreen extends Component {
         loadervisible: false,
       },
       function(){
-      setTimeout(() => {this.setState({showNotifier: notificationData.length > 0 ? (true) : (false),notification : notificationData.length > 0 ? (true) : (false)})}, 500)
+      setTimeout(() => {this.setState({showNotifier: notificationData.length > 0 ? (true) : (false),notification : notificationData.length > 0 ? (true) : (false)})}, 700)
       //setTimeout(() => {this.setState({showNotifier: false})},4000)
       }
     )

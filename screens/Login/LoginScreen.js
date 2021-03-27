@@ -86,16 +86,14 @@ class LoginScreen extends Component {
     getLoginData = async () => {
       try {
         const loggedIn = await AsyncStorage.getItem('loggedIn')
+        this.setState({
+          bigloadervisible : false
+        })
 
         if(loggedIn != null) {
           const data = JSON.parse(loggedIn)
           this.setState({
             loggedIn : data,
-          },
-          function(){
-            this.setState({
-              bigloadervisible : false
-            })
           })
         }
         if (loggedIn != "true"){
