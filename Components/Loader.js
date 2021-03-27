@@ -7,6 +7,10 @@ import colors from '../config/colors';
 
 class Loader extends Component {
 
+  componentDidMount(){
+    //console.log(this.props.value);
+  }
+
   render() {
     return (
       <Modal backdropColor='transparent'
@@ -19,7 +23,7 @@ class Loader extends Component {
             cardMaxElevation={5}
             cornerRadius={5}>
               <Image style={styles.gifStyle} source={require('../res/animations/gifs/loader.gif')} />
-              <Text style={styles.loadingText}>Loading</Text>
+              <Text style={styles.loadingText}>{this.props.value != undefined ? (this.props.value) : ("Loading")}</Text>
           </CardView>
         </View> 
         </Modal>
@@ -34,10 +38,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom:50,
-    backgroundColor:"rgba(0,0,0,0.1)"
+    backgroundColor:"rgba(0,0,0,0.2)"
   },
   card: {
-    flex:0,
+    width:"22%",
     padding: 6,
     paddingLeft:6,
     paddingRight:8,
