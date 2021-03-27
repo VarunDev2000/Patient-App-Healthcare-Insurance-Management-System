@@ -18,18 +18,18 @@ class Navigation extends Component {
     return (
       <>
         <Stack.Navigator 
-        initialRouteName={"LoginScreen"}
+        initialRouteName={"HomeScreen"}
         screenOptions={{ 
           headerShown: false,
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}>
-          <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="OldBills" component={OldBills} />
           <Stack.Screen name="AllBills" component={AllBills} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
           <Stack.Screen name="DetailedScreen" component={DetailedScreen} />
           <Stack.Screen name="BillDataFileScreen" component={BillDataFileScreen} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} />
 
           <Stack.Screen name="DrawerContent" component={DrawerContent} />
         </Stack.Navigator>

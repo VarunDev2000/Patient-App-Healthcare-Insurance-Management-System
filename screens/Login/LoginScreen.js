@@ -14,6 +14,7 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import BiometricModal from '../../Components/BiometricModal';
 
+import DrawerNavigation from "../DrawerNavigation";
 import HomeScreen from '../Home/HomeScreen';
 import Loader from "../../Components/Loader";
 
@@ -251,7 +252,7 @@ class LoginScreen extends Component {
       this.props.navigation.reset(
         {
           index: 0,
-          routes: [{ name: 'HomeScreen' }],
+          routes: [{ name: 'MainScreen' }],
         }))
     }
 
@@ -278,7 +279,7 @@ class LoginScreen extends Component {
 
     if(this.state.loggedIn)
     {
-      return <HomeScreen navigation={this.props.navigation}/>
+      return <DrawerNavigation/>
     }
     else{
       return (

@@ -23,7 +23,7 @@ class Loader extends Component {
             cardMaxElevation={5}
             cornerRadius={5}>
               <Image style={styles.gifStyle} source={require('../res/animations/gifs/loader.gif')} />
-              <Text style={styles.loadingText}>{this.props.value != undefined ? (this.props.value) : ("Loading")}</Text>
+              <Text style={styles.loadingText}>Loading</Text>
           </CardView>
         </View> 
         </Modal>
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     backgroundColor:"rgba(0,0,0,0.2)"
   },
   card: {
-    width:"22%",
+    flex : 0,
     padding: 6,
     paddingLeft:6,
     paddingRight:8,

@@ -13,6 +13,7 @@ import {
 } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Octicons';
+import { acc } from "react-native-reanimated";
 import Loader from "../../Components/Loader";
 
 
@@ -24,7 +25,7 @@ class DrawerContent extends Component {
       data : [],
 
       loadervisible : true,
-      
+
       patient_name : "-",
       number : "-",
       total_bills : 0,
@@ -77,13 +78,14 @@ class DrawerContent extends Component {
 
       this.setState({
         patient_name : data[1],
-        number : data[0],
+        number : data[0]
       })
     }
 
     getAndPrepareData = async () => {
       try {
         const account = await AsyncStorage.getItem("account")
+
         this.setState({
           account : JSON.parse(account)
         },
@@ -93,7 +95,7 @@ class DrawerContent extends Component {
         )
       } catch(e) {
         this.setState({
-          error : err
+          error : e
         })
         console.error("Cannot fetch data from storage " + e)
       }
@@ -189,72 +191,72 @@ class DrawerContent extends Component {
 
 
     render() {
-    if(this.state.loadervisible == true){
-      return <Loader value = "Finishing"/>
-    }
-    else{
-      return(
-          <View style={{flex:1}}>
-              <DrawerContentScrollView {...this.props}>
-              <View style={styles.drawerContent}>
-                      <View style={styles.userInfoSection}>
-                          <View style={{flexDirection:'row'}}>
-                              <Avatar.Image 
-                                  source={
-                                      require('./res/user1.jpg')
-                                  }
-                                  size={60}
-                                  style={{marginTop:0,backgroundColor:"white"}}
-                              />
-                              <View style={{marginLeft:15, flexDirection:'column'}}>
-                                  <Title style={styles.title}>{this.state.patient_name}</Title>
-                                  <Caption style={styles.caption}>{"(+91) " + this.state.number}</Caption>
-                              </View>
-                          </View>
+      if(this.state.loadervisible == true){
+        return <Loader value = "Loading" />
+      }
+      else{
+        return(
+            <View style={{flex:1}}>
+                <DrawerContentScrollView {...this.props}>
+                <View style={styles.drawerContent}>
+                        <View style={styles.userInfoSection}>
+                            <View style={{flexDirection:'row'}}>
+                                <Avatar.Image 
+                                    source={
+                                        require('./res/user1.jpg')
+                                    }
+                                    size={60}
+                                    style={{marginTop:0,backgroundColor:"white"}}
+                                />
+                                <View style={{marginLeft:15, flexDirection:'column'}}>
+                                    <Title style={styles.title}>{this.state.patient_name}</Title>
+                                    <Caption style={styles.caption}>{"(+91) " + this.state.number}</Caption>
+                                </View>
+                            </View>
 
 
-                          <View style={[styles.section,{marginTop:20}]}>
-                              <Caption style={[styles.caption,{fontWeight:"normal"}]}>Total bills applied : </Caption>
-                              <Paragraph style={[styles.paragraph, styles.caption]}>{this.state.total_bills}</Paragraph>
-                          </View>
+                            <View style={[styles.section,{marginTop:20}]}>
+                                <Caption style={[styles.caption,{fontWeight:"normal"}]}>Total bills applied : </Caption>
+                                <Paragraph style={[styles.paragraph, styles.caption]}>{this.state.total_bills}</Paragraph>
+                            </View>
 
-                          <View style={styles.row}>
-                              <View style={styles.section}>
-                                  <Caption style={[styles.caption,{color:"green",fontWeight:"bold"}]}>Accepted : </Caption>
-                                  <Paragraph style={[styles.paragraph, styles.caption,{fontWeight:"bold"}]}>{this.state.accepted}</Paragraph>
-                              </View>
-                              <View style={styles.section}>
-                                  <Caption style={[styles.caption,{color:"#c9c930",fontWeight:"bold"}]}>Waiting : </Caption>
-                                  <Paragraph style={[styles.paragraph, styles.caption]}>{this.state.waiting}</Paragraph>
-                              </View>
-                          </View>
-                          <View style={[styles.section,{marginBottom:0}]}>
-                              <Caption style={[styles.caption,{color:"red",fontWeight:"bold"}]}>Rejected : </Caption>
-                              <Paragraph style={[styles.paragraph, styles.caption]}>{this.state.rejected}</Paragraph>
-                          </View>
-                      </View>
-                      
-                      <DrawerItemList {...this.props} />
-                      
-                      </View>
-              </DrawerContentScrollView>
-              <View style={styles.bottomDrawerSection}>
-                  <DrawerItem 
-                      icon={({color, size}) => (
-                          <Icon 
-                          name="sign-out" 
-                          color="black"
-                          size={20}
-                          />
-                      )}
-                      label= {config => <Text>Sign Out</Text>}
-                      onPress={() => this.logOutModalPopup()}
-                  />
-              </View>
-          </View>
-      );
-    }
-}
+                            <View style={styles.row}>
+                                <View style={styles.section}>
+                                    <Caption style={[styles.caption,{color:"green",fontWeight:"bold"}]}>Accepted : </Caption>
+                                    <Paragraph style={[styles.paragraph, styles.caption,{fontWeight:"bold"}]}>{this.state.accepted}</Paragraph>
+                                </View>
+                                <View style={styles.section}>
+                                    <Caption style={[styles.caption,{color:"#c9c930",fontWeight:"bold"}]}>Waiting : </Caption>
+                                    <Paragraph style={[styles.paragraph, styles.caption]}>{this.state.waiting}</Paragraph>
+                                </View>
+                            </View>
+                            <View style={[styles.section,{marginBottom:0}]}>
+                                <Caption style={[styles.caption,{color:"red",fontWeight:"bold"}]}>Rejected : </Caption>
+                                <Paragraph style={[styles.paragraph, styles.caption]}>{this.state.rejected}</Paragraph>
+                            </View>
+                        </View>
+                        
+                        <DrawerItemList {...this.props} />
+                        
+                        </View>
+                </DrawerContentScrollView>
+                <View style={styles.bottomDrawerSection}>
+                    <DrawerItem 
+                        icon={({color, size}) => (
+                            <Icon 
+                            name="sign-out" 
+                            color="black"
+                            size={20}
+                            />
+                        )}
+                        label= {config => <Text>Sign Out</Text>}
+                        onPress={() => this.logOutModalPopup()}
+                    />
+                </View>
+            </View>
+        );
+      }
+  }
 }
 
 const styles = StyleSheet.create({
