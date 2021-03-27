@@ -15,7 +15,6 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 import BiometricModal from '../../Components/BiometricModal';
 
 import DrawerNavigation from "../DrawerNavigation";
-import HomeScreen from '../Home/HomeScreen';
 import Loader from "../../Components/Loader";
 
 class LoginScreen extends Component {
@@ -25,6 +24,8 @@ class LoginScreen extends Component {
       this.state = {
           loggedIn : false,
           loadervisible : false,
+
+          bigloadervisible : true,
 
           height: Dimensions.get("screen").height,
           cardImageSrc: "./res/1.jpg",
@@ -92,7 +93,9 @@ class LoginScreen extends Component {
             loggedIn : data,
           },
           function(){
-            //console.log(this.state.loggedIn)
+            this.setState({
+              bigloadervisible : false
+            })
           })
         }
         if (loggedIn != "true"){
@@ -277,108 +280,113 @@ class LoginScreen extends Component {
       return true;
     }
 
-    if(this.state.loggedIn)
-    {
-      return <DrawerNavigation/>
+    if(this.state.bigloadervisible){
+      return null;
     }
     else{
-      return (
-        this.state.error != "" ? (infoModalPopup()) : (
-        <View style={{flex: 1, backgroundColor:"white"}}>
-          <StatusBar backgroundColor={colors.primary} />
+      if(this.state.loggedIn)
+      {
+        return <DrawerNavigation/>
+      }
+      else{
+        return (
+          this.state.error != "" ? (infoModalPopup()) : (
+          <View style={{flex: 1, backgroundColor:"white"}}>
+            <StatusBar backgroundColor={colors.primary} />
 
-          <View style={{flex:1}}>
-          <KeyboardAwareView animated={true}>
-          <View style={{flex: 1}}>
-          <ScrollView style={{flex: 1}} ref={ref => {this.scrollView = ref}} onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}>
+            <View style={{flex:1}}>
+            <KeyboardAwareView animated={true}>
+            <View style={{flex: 1}}>
+            <ScrollView style={{flex: 1}} ref={ref => {this.scrollView = ref}} onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}>
 
-          {
-          <Image style={styles.cardImage} source={require('./res/login.png')} />
-          }
+            {
+            <Image style={styles.cardImage} source={require('./res/login.png')} />
+            }
 
-          <Text style={styles.pageTitle}>LOG IN</Text>
+            <Text style={styles.pageTitle}>LOG IN</Text>
 
-              <View style={[styles.textFieldStyle,{marginBottom : this.state.usernameError == true ? (4) : (20), borderColor : this.state.usernameError == true ? ("red") : ("#e3e3e3"),backgroundColor: this.state.usernameError == true ? ("#fff7fa") : ("#f5f5f5")}]}>
-                <Icon1 name="user" size={20} color={this.state.usernameError == true ? ("red") : ("#858585")} style={{paddingTop:11,paddingLeft:3,paddingRight:8}}/>
-                <TextInput style = {{width:"95%",fontWeight:"normal"}}
-                  value={this.state.username}
-                  underlineColorAndroid = "transparent"
-                  placeholder = "Username"
-                  placeholderTextColor = {this.state.usernameError == true ? ("red") : ("#858585")}
-                  autoCapitalize = "none"
-                  selectTextOnFocus={true}
-                  onChangeText = {this.usernameChange}/>
-              </View>
-              <ErrorField errorMessage = {this.state.usernameErrorText} isVisible = {this.state.usernameError} />
-
-              <View style={[styles.textFieldStyle,{marginBottom : this.state.passwordError == true ? (4) : (20), borderColor : this.state.passwordError == true ? ("red") : ("#e3e3e3"),backgroundColor: this.state.passwordError == true ? ("#fff7fa") : ("#f5f5f5")}]}>
-                <Icon name="ios-lock-closed" size={21} color={this.state.passwordError == true ? ("red") : ("#858585")} style={{paddingTop:9,paddingLeft:2,paddingRight:3}}/>
-                <TextInput style={{width:"85%",fontWeight:"normal"}}
-                  value={this.state.password}
-                  secureTextEntry={!this.state.passVisible}
-                  underlineColorAndroid = "transparent"
-                  placeholder = "Password"
-                  placeholderTextColor = {this.state.passwordError == true ? ("red") : ("#858585")}
-                  autoCapitalize = "none"
-                  selectTextOnFocus={true}
-                  onChangeText = {this.passwordChange}/>
-                <TouchableOpacity activeOpacity={.7} onPress={setPassVisibility}>
-                  {this.state.passVisible ? (
-                    <Icon name="eye-off-sharp" size={22} color="#a3a3a3" style={{paddingTop:10,paddingLeft:3}}/>
-                  ) : (
-                    <Icon name="eye-sharp" size={22} color="#a3a3a3" style={{paddingTop:10,paddingLeft:3}}/>
-                  )}
-                  </TouchableOpacity>
-              </View>
-              <ErrorField errorMessage = {this.state.passwordErrorText} isVisible = {this.state.passwordError} />
-
-              <ErrorField errorMessage = "Account not registered" isVisible = {!this.state.accountExist} />
-            
-                  </ScrollView>
+                <View style={[styles.textFieldStyle,{marginBottom : this.state.usernameError == true ? (4) : (20), borderColor : this.state.usernameError == true ? ("red") : ("#e3e3e3"),backgroundColor: this.state.usernameError == true ? ("#fff7fa") : ("#f5f5f5")}]}>
+                  <Icon1 name="user" size={20} color={this.state.usernameError == true ? ("red") : ("#858585")} style={{paddingTop:11,paddingLeft:3,paddingRight:8}}/>
+                  <TextInput style = {{width:"95%",fontWeight:"normal"}}
+                    value={this.state.username}
+                    underlineColorAndroid = "transparent"
+                    placeholder = "Username"
+                    placeholderTextColor = {this.state.usernameError == true ? ("red") : ("#858585")}
+                    autoCapitalize = "none"
+                    selectTextOnFocus={true}
+                    onChangeText = {this.usernameChange}/>
                 </View>
+                <ErrorField errorMessage = {this.state.usernameErrorText} isVisible = {this.state.usernameError} />
+
+                <View style={[styles.textFieldStyle,{marginBottom : this.state.passwordError == true ? (4) : (20), borderColor : this.state.passwordError == true ? ("red") : ("#e3e3e3"),backgroundColor: this.state.passwordError == true ? ("#fff7fa") : ("#f5f5f5")}]}>
+                  <Icon name="ios-lock-closed" size={21} color={this.state.passwordError == true ? ("red") : ("#858585")} style={{paddingTop:9,paddingLeft:2,paddingRight:3}}/>
+                  <TextInput style={{width:"85%",fontWeight:"normal"}}
+                    value={this.state.password}
+                    secureTextEntry={!this.state.passVisible}
+                    underlineColorAndroid = "transparent"
+                    placeholder = "Password"
+                    placeholderTextColor = {this.state.passwordError == true ? ("red") : ("#858585")}
+                    autoCapitalize = "none"
+                    selectTextOnFocus={true}
+                    onChangeText = {this.passwordChange}/>
+                  <TouchableOpacity activeOpacity={.7} onPress={setPassVisibility}>
+                    {this.state.passVisible ? (
+                      <Icon name="eye-off-sharp" size={22} color="#a3a3a3" style={{paddingTop:10,paddingLeft:3}}/>
+                    ) : (
+                      <Icon name="eye-sharp" size={22} color="#a3a3a3" style={{paddingTop:10,paddingLeft:3}}/>
+                    )}
+                    </TouchableOpacity>
+                </View>
+                <ErrorField errorMessage = {this.state.passwordErrorText} isVisible = {this.state.passwordError} />
+
+                <ErrorField errorMessage = "Account not registered" isVisible = {!this.state.accountExist} />
               
-                <TouchableOpacity
-                  activeOpacity={.7}
-                  style = {styles.submitButton}
-                  onPress = {
-                    loginClick
-                  }>
+                    </ScrollView>
+                  </View>
+                
+                  <TouchableOpacity
+                    activeOpacity={.7}
+                    style = {styles.submitButton}
+                    onPress = {
+                      loginClick
+                    }>
+                    {
+                    this.state.loadervisible ? (
+                      <View style={{flex:0,borderRadius:200,backgroundColor:"white",padding:5}}>
+                        <Image style={styles.gifStyle} source={require('../../res/animations/gifs/loader.gif')} />
+                      </View>
+                    ) : (
+                      <Text style = {styles.submitButtonText}> LOGIN </Text>
+                    )
+                    }
+                  </TouchableOpacity>
+
                   {
-                  this.state.loadervisible ? (
-                    <View style={{flex:0,borderRadius:200,backgroundColor:"white",padding:5}}>
-                      <Image style={styles.gifStyle} source={require('../../res/animations/gifs/loader.gif')} />
-                    </View>
-                  ) : (
-                    <Text style = {styles.submitButtonText}> LOGIN </Text>
-                  )
+                  this.state.biometryType != "Biometrics" ? (
+                    <BiometricModal
+                      type = "Biometry"
+                      isModalVisible = {true}
+                      closeModal = {closeModal}
+                      modalTitle = "Biometric not supported on this device"
+                      modelDesc = "Try installing the app on other device"
+                      opacity = {0.9}
+                    />) : (null)
                   }
-                </TouchableOpacity>
 
-                {
-                this.state.biometryType != "Biometrics" ? (
                   <BiometricModal
-                    type = "Biometry"
-                    isModalVisible = {true}
+                    isModalVisible = {this.state.fingerprintNotEnabled}
                     closeModal = {closeModal}
-                    modalTitle = "Biometric not supported on this device"
-                    modelDesc = "Try installing the app on other device"
-                    opacity = {0.9}
-                  />) : (null)
-                }
+                    modalTitle = "Fingerprint not enrolled"
+                    modelDesc = "Try setting fingerprint authentication on your device"
+                    opacity = {0.6}
+                  />
 
-                <BiometricModal
-                  isModalVisible = {this.state.fingerprintNotEnabled}
-                  closeModal = {closeModal}
-                  modalTitle = "Fingerprint not enrolled"
-                  modelDesc = "Try setting fingerprint authentication on your device"
-                  opacity = {0.6}
-                />
-
-              </KeyboardAwareView>
-              </View>
-              </View>
-        )
-      );
+                </KeyboardAwareView>
+                </View>
+                </View>
+          )
+        );
+    }
   }
   }
 }

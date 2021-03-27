@@ -365,7 +365,7 @@ class HomeScreen extends Component {
                     contentContainerStyle={styles.bottomLayout}
                     data={this.state.billData}
                     renderItem={currentBillsItem}
-                    ListFooterComponent={<View style={{height:330}}></View>}
+                    ListFooterComponent={<View style={{height:380}}></View>}
                     keyExtractor={item => item.id}
                   />
                 ) : (
