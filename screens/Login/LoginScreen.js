@@ -58,7 +58,8 @@ class LoginScreen extends Component {
     async componentDidMount() {
       LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
 
-      this.getLoginData();
+      this.loginSetup();
+      //this.getLoginData();
       //this.checkBiometricAvailability();
     }
 
@@ -81,6 +82,19 @@ class LoginScreen extends Component {
         { text: "YES", onPress: () => BackHandler.exitApp() }
       ]);
       return true;
+    }
+
+    
+    loginSetup = async () => {
+      try {
+        const jsonValue = JSON.stringify(false)
+        await AsyncStorage.setItem("loggedIn", jsonValue)
+
+        this.getLoginData();
+
+      } catch(e) {
+        console.error("Cannot fetch data from storage " + e)
+      }
     }
 
     getLoginData = async () => {
@@ -308,7 +322,7 @@ class LoginScreen extends Component {
                   <TextInput style = {{width:"95%",fontWeight:"normal"}}
                     value={this.state.username}
                     underlineColorAndroid = "transparent"
-                    placeholder = "Username"
+                    placeholder = "Account address"
                     placeholderTextColor = {this.state.usernameError == true ? ("red") : ("#858585")}
                     autoCapitalize = "none"
                     selectTextOnFocus={true}

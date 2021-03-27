@@ -49,6 +49,14 @@ class DrawerContent extends Component {
         total_bills : data.length
       })
 
+      if(data.length <= 0){
+        this.setState({
+          loadervisible : false,
+        }) 
+        console.log("end");
+        return;
+      }
+
       for(var i = 0; i < data.length; i++){
         if(data[i][7] === account){
 
@@ -156,6 +164,9 @@ class DrawerContent extends Component {
         //console.log(res)
       })
       .catch((err) => {
+        this.setState({
+          loadervisible : false,
+        }) 
         console.log('err', err.message)
       })
     }

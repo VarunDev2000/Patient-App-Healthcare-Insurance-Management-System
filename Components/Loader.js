@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom:50,
-    backgroundColor:"rgba(0,0,0,0.2)"
+    backgroundColor:"rgba(0,0,0,0.1)"
   },
   card: {
     flex : 0,
