@@ -14,7 +14,7 @@ class BillDataFileScreen extends Component {
     }
 
     componentDidMount(){
-      console.log(this.props.route.params.hash)
+      //console.log(this.props.route.params.hash)
     }
 
   render() {
@@ -30,6 +30,7 @@ class BillDataFileScreen extends Component {
             </View>
             <View style={{flex : 1}}>
               <WebView 
+              style={{backgroundColor:"black"}}
               source={{ uri: `http://ipfs.infura.io/ipfs/${this.props.route.params.hash}`}} 
               originWhitelist={["*"]}
               useWebKit
